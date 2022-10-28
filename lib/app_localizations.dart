@@ -102,6 +102,20 @@ abstract class AppLocalizations {
   /// **'Subrate'**
   String get app_name;
 
+  String get ok;
+
+  String get selectImage;
+
+  String get camera;
+
+  String get gallery;
+  String get kyc_valid;
+
+  String get date_not_selected;
+  String get uploadid;
+  String get select;
+  String get idtype;
+
   /// No description provided for @welcome_to.
   ///
   /// In en, this message translates to:
@@ -269,6 +283,8 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'sign up failed'**
   String get sign_up_failed;
+  String get lesson;
+  String get register_with_apple;
 
   /// No description provided for @forgot_password.
   ///

@@ -8,8 +8,8 @@ class ApiSettings {
   static const logout = _authURL + 'logout';
   static const register = _authURL + 'register';
   static const lesson = _apiURL + 'lessons';
-  static const lessonTaskC = _apiURL + 'lesson_tasks';
-  static const lessonTaskR = _apiURL + 'lesson_tasks_completed';
+  static const lessonTaskC = _apiURL + 'lesson_tasks_completed';
+  static const lessonTaskR = _apiURL + 'lesson_tasks';
   static const google = _authURL + 'google-login';
   static const facebook = _authURL + 'facebook-login';
   static const kyc = _apiURL + 'kyc-validation';
@@ -26,6 +26,8 @@ class ApiSettings {
   static const missionsCountUrl = _apiURL + 'missions_counts';
   static const moneyUrl = _apiURL + 'money';
   static const paymentGatWayUrl = _apiURL + 'payment_gateways';
+  static const sendpay = _apiURL + 'payouts/store';
+
   static const rankUrl = _apiURL + 'my-rank';
   static const payoutsUrl = _apiURL + 'payouts';
   static const giftsUrl = _apiURL + 'gifts';

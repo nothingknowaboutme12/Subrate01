@@ -17,7 +17,7 @@ class MissionApiController {
 
   Future<List<Task>> getMissions() async {
     var response = await responseApiGetMissions(ApiSettings.missionURL);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return getJsonDataMissions(response.body);
     }
     return [];
@@ -26,7 +26,7 @@ class MissionApiController {
   Future<List<Task>> getRemainingMissions() async {
     var response =
         await responseApiGetMissions(ApiSettings.remainingMissionURL);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return getJsonDataMissions(response.body);
     }
     return [];
@@ -35,7 +35,7 @@ class MissionApiController {
   Future<List<Task>> getCompletedMissions() async {
     var response =
         await responseApiGetMissions(ApiSettings.completedMissionURL);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return getJsonDataMissions(response.body);
     }
     return [];

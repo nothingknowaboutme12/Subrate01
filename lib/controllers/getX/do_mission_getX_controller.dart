@@ -14,7 +14,7 @@ class DoMissionGetXController extends GetxController {
 
   @override
   void onInit() {
-    // read();
+    read();
     // toDoMission();
     // totalPoint();
     super.onInit();

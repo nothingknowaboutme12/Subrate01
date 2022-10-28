@@ -9,22 +9,23 @@ import '../../controllers/storage/network/api/api_settings.dart';
 import 'base_response.dart';
 
 class SocialAuth {
-  static Future<void> GoogleSignin() async {
+  static Future<bool> GoogleSignin() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
-    // GoogleSignIn().signOut();
+
     print(googleUser);
+    print("flutter google auth $googleAuth");
     http.Response response =
         await http.post(Uri.parse(ApiSettings.google), body: {
       "name": googleUser!.displayName,
       "email": googleUser.email,
       "google_id": googleUser.id,
     });
-
-    if (response.statusCode == 200) {
+    print(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
       var jsonresponse = await jsonDecode(response.body);
       BaseResponse baseResponse = BaseResponse.fromJson(jsonresponse);
       UserPreferenceController().saveUserInformation(
@@ -32,16 +33,18 @@ class SocialAuth {
         token: baseResponse.data.token,
         email: googleUser.email,
       );
+      return true;
     } else {
-      return;
+      return false;
     }
   }
 
-  static Future<void> FacebookSignin() async {
+  static Future<bool> FacebookSignin() async {
     final LoginResult loginResult = await FacebookAuth.instance.login(
       permissions: ["public_profile", "email"],
       loginBehavior: LoginBehavior.dialogOnly,
     );
+
     final fbauth = await FacebookAuth.instance.getUserData();
     final tken = loginResult.accessToken!.token;
     print(tken);
@@ -53,6 +56,8 @@ class SocialAuth {
       "facebook_id": fbauth['id'],
     });
     print("response$response");
+
+    print("facebook status code ${response.statusCode}");
     if (response.statusCode == 200 || response.statusCode == 201) {
       var jsonresponse = jsonDecode(response.body);
       BaseResponse baseResponse = BaseResponse.fromJson(jsonresponse);
@@ -62,8 +67,9 @@ class SocialAuth {
         token: baseResponse.data.token,
         email: fbauth['email'],
       );
+      return true;
     } else {
-      return;
+      return false;
     }
   }
 }

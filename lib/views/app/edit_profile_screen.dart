@@ -46,7 +46,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
 
   String? gender;
   String? _selectedGender;
-  final List<String> _genderList = [
+  final _genderList = [
     'Male',
     'Female',
   ];
@@ -106,10 +106,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    setState(() {
-      _connectionStatus = result;
-      // print(_connectionStatus.name);
-    });
+    if (mounted)
+      setState(() {
+        _connectionStatus = result;
+        // print(_connectionStatus.name);
+      });
   }
 
   @override
@@ -132,16 +133,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     //
-    // if (firstBuild) {
-    //   firstBuild = false;
-    //   if (gender == 'Male') {
-    //     _selectedGender = AppLocalizations.of(context)!.gender_male;
-    //   } else if (gender == 'Female') {
-    //     _selectedGender = AppLocalizations.of(context)!.gender_female;
-    //   }
-    // }
-    // _genderList[0] = AppLocalizations.of(context)!.gender_male;
-    // _genderList[1] = AppLocalizations.of(context)!.gender_female;
+    if (firstBuild) {
+      firstBuild = false;
+      if (gender == 'Male') {
+        _selectedGender = AppLocalizations.of(context)!.gender_male;
+      } else if (gender == 'Female') {
+        _selectedGender = AppLocalizations.of(context)!.gender_female;
+      }
+    }
+    _genderList[0] = AppLocalizations.of(context)!.gender_male;
+    _genderList[1] = AppLocalizations.of(context)!.gender_female;
 
     return Scaffold(
       backgroundColor: MissionDistributorColors.scaffoldBackground,
@@ -381,67 +382,63 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
                 ),
                 SizedBox(height: height / 40),
 
-                // Gender
-                // GestureDetector(
-                //   behavior: HitTestBehavior.opaque,
-                //   onTap: () {},
-                //   child:
-                // SizedBox(
-                //   width: double.infinity,
-                //   // height: 200,
-                //   height: itemSize,
-                //   // child: DropdownButtonHideUnderline(
-                //   child: DropdownButton(
-                //     value: _selectedGender ?? '',
-                //     // customButton:
-                //     // Row(
-                //     //   crossAxisAlignment: CrossAxisAlignment.center,
-                //     //   children: [
-                //     //     Image.asset(
-                //     //       Assets.genderIcon,
-                //     //     ),
-                //     //     SizedBox(width: width / 19.63),
-                //     //     Text(
-                //     //       AppLocalizations.of(context)!.gender,
-                //     //       style: const TextStyle(fontSize: 17),
-                //     //     ),
-                //     //     const Spacer(flex: 1),
-                //     //     Text(
-                //     //       _selectedGender ?? '',
-                //     //       style: const TextStyle(
-                //     //           fontSize: 13, color: Colors.grey),
-                //     //     ),
-                //     //     SizedBox(width: width / 28),
-                //     //     const Icon(
-                //     //       Icons.arrow_forward_ios_rounded,
-                //     //       size: 16,
-                //     //       color: MissionDistributorColors.primaryColor,
-                //     //     ),
-                //     //   ],
-                //     // ),
-                //     items: ['Male', 'Female'].map((item) {
-                //       return DropdownMenuItem<String>(
-                //         value: item,
-                //         child: Text(item),
-                //       );
-                //     }).toList(),
-                //     // isExpanded: true,
-                //     onChanged: (value) {
-                //       setState(() {
-                //         _selectedGender = value as String;
-                //         if (_selectedGender == 'ذكر') {
-                //           gender = 'Male';
-                //         } else if (_selectedGender == 'انثى') {
-                //           gender = 'Female';
-                //         }
-                //       });
-                //     },
-                //     // buttonHeight: 40,
-                //     itemHeight: 40,
-                //   ),
-                //   // ),
-                // ),
-                // ),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {},
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: itemSize,
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        customButton: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              Assets.genderIcon,
+                            ),
+                            SizedBox(width: width / 19.63),
+                            Text(
+                              AppLocalizations.of(context)!.gender,
+                              style: const TextStyle(fontSize: 17),
+                            ),
+                            const Spacer(flex: 1),
+                            Text(
+                              _selectedGender ?? '',
+                              style: const TextStyle(
+                                  fontSize: 13, color: Colors.grey),
+                            ),
+                            SizedBox(width: width / 28),
+                            const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                              color: MissionDistributorColors.primaryColor,
+                            ),
+                          ],
+                        ),
+                        // Text("Umair"),
+                        items: _genderList.map((item) {
+                          return DropdownMenuItem(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        isExpanded: true,
+                        // value: _selectedGender,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedGender = value as String;
+                            if (_selectedGender == 'ذكر') {
+                              gender = 'Male';
+                            } else if (_selectedGender == 'انثى') {
+                              gender = 'Female';
+                            }
+                          });
+                          print(value);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
 
                 SizedBox(height: height / 18.689),
 
@@ -482,10 +479,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
   }
 
   Future<void> performUpdateUserInformation() async {
-    // print(_usernameTextController.text);
-    // print(_emailTextController.text);
-    // print(_);
-    // print(_phoneTextEditingController.text);
     if (checkData()) {
       await updateUserInformation(user: await readData());
     }
@@ -626,9 +619,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
           required bool status,
           User? user,
         }) {
-          _changeProgressValue(value: status ? 1 : 0);
-          print(message);
-          print(status);
           if (status) {
             Navigator.pop(context);
             showSnackBar(

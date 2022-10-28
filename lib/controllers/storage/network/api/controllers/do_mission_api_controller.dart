@@ -24,10 +24,7 @@ class DoMissionApiController with Helpers {
     var url = Uri.parse(ApiSettings.getDoMissionURL);
 
     var response = await http.get(url);
-    print(response.statusCode);
-    print(response.body);
-
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       print('Success Do Missions');
       var dataJsonArray = jsonDecode(response.body)['data'] as List;
       return dataJsonArray.map((e) => DoTask.fromJson(e)).toList();

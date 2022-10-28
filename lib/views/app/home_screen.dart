@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late double width;
   late double height;
 
+
   final AppGetXController _appGetXController = Get.put(AppGetXController());
 
   final List<BottomNavigationBarScreen> _bnScreens =
@@ -56,20 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 Assets.profileImage,
               ) as ImageProvider,
       ),
-      // CircleAvatar(
-      //   radius: 15,
-      //   backgroundImage: AssetImage(
-      //     Assets.profileImage,
-      //     // color: Colors.grey.shade600,
-      //     // filterQuality: FilterQuality.high,
-      //   ),
-      // ),
+  
     ),
   ];
 
   @override
   void initState() {
-    Get.put(MissionGetXController());
+  
     super.initState();
   }
 

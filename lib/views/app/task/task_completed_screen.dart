@@ -20,10 +20,11 @@ import '../../../models/url_link.dart';
 class MissionCompleteScreen extends StatefulWidget {
   Task mission;
   String imageUrl;
-  String money;
+  // String money;
 
   MissionCompleteScreen(
-      {required this.money,
+      {
+      // required this.money,
       required this.mission,
       required this.imageUrl,
       Key? key})
@@ -51,16 +52,21 @@ class _MissionCompleteScreenState extends State<MissionCompleteScreen> {
 
   @override
   void initState() {
+    doall();
     _url = widget.mission.link != null && widget.mission.link != ''
         ? Uri.parse(widget.mission.link)
         : Uri.parse('https://flutter.dev');
-    DoMissionGetXController.to.totalPoint();
+
     super.initState();
+  }
+
+  doall() async {
+    await MissionGetXController.to.read();
+    await DoMissionGetXController.to.totalPoint();
   }
 
   @override
   Widget build(BuildContext context) {
-    MissionGetXController.to.read();
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     return Scaffold(

@@ -43,7 +43,7 @@ class _MainScreenState extends State<MainScreen> with Helpers {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   bool connection = false;
-  // data() async {
+  // doall() async {
   //   await MissionGetXController.to.read();
   //   await AppGetXController.to.readGifts();
   //   await AppGetXController.to.readRank();
@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> with Helpers {
   @override
   void initState() {
     super.initState();
-    // data();
+    // doall();
     testConnection();
     initConnectivity();
     _connectivitySubscription =
@@ -101,10 +101,6 @@ class _MainScreenState extends State<MainScreen> with Helpers {
   }
 
   bool isProgress = false;
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +111,9 @@ class _MainScreenState extends State<MainScreen> with Helpers {
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
-        if (mounted)
-          // setState(() {
-          connection;
+        // if (mounted)
+        //   setState(() {
+        connection;
         // });
       },
     );
@@ -175,9 +171,9 @@ class _MainScreenState extends State<MainScreen> with Helpers {
         color: MissionDistributorColors.primaryColor,
         backgroundColor: MissionDistributorColors.secondaryColor,
         onRefresh: () async {
-          MissionGetXController.to.read();
-          AppGetXController.to.readGifts();
-          AppGetXController.to.readRank();
+          await MissionGetXController.to.read();
+          await AppGetXController.to.readGifts();
+          await AppGetXController.to.readRank();
         },
         child: OrientationBuilder(
           builder: (context, orientation) {
@@ -197,17 +193,17 @@ class _MainScreenState extends State<MainScreen> with Helpers {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.wallet,
+                          "Subrate",
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          AppLocalizations.of(context)!.wallet_desc,
+                          "Earn from home what you learn",
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 14,
                             color: Colors.grey.shade400,
                           ),
                         ),
@@ -539,12 +535,11 @@ class _MainScreenState extends State<MainScreen> with Helpers {
                                 },
                               );
                               List<Task> _controller =
-                                  controller.remainingMissions;
+                                  controller.remainingMissions.value;
                               if (_controller.isNotEmpty) {
                                 return ListView.builder(
                                   itemCount: _controller.length,
                                   itemBuilder: (context, index) {
-                                    print(_controller[index].images);
                                     return GestureDetector(
                                       onTap: () {
                                         if (!_selectedDoneMissions) {

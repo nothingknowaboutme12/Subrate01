@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:subrate/models/Lesson/LessonTaskController.dart';
+import 'package:subrate/views/app/Lesson/Task/lesson_task_completed_screen.dart';
 import 'package:subrate/views/app/task/main_screen.dart';
 
 import '../../../../app_localizations.dart';
@@ -37,7 +38,8 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
   String todo = '0';
   // LessonTaskGetxController _lessonTaskGetxController =
   //
-  // final LessonTaskGetxController _missionGetXController =
+  final MissionGetXController _missionGetXController =
+      Get.put(MissionGetXController());
   List<Task> missions = [];
   bool _selectedDoneMissions = false;
   ConnectivityResult _connectionStatus = ConnectivityResult.none;
@@ -107,13 +109,12 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
       const Duration(milliseconds: 500),
       () {
         if (mounted) {
-          // setState(() {
-          connection;
-          // });
+          setState(() {
+            connection;
+          });
         }
       },
     );
-    print(widget.id);
     return RefreshIndicator(
       color: MissionDistributorColors.primaryColor,
       backgroundColor: MissionDistributorColors.secondaryColor,
@@ -275,8 +276,8 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
                               },
                             );
                             List<Task> _controller = _selectedDoneMissions
-                                ? controller.completedLessonTask.value
-                                : controller.remaininglessonTask.value;
+                                ? controller.completedLessonTask
+                                : controller.remaininglessonTask;
                             if (_controller.isNotEmpty) {
                               return ListView.builder(
                                 itemCount: _controller.length,
@@ -290,9 +291,26 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
                                             builder: (context) =>
                                                 LessonTaskDetail(
                                               mission: _controller[index],
+                                              // ImageUrl: _controller[index]
+                                              //     .images[0]
+                                              //     .name,
                                             ),
                                           ),
                                         );
+                                      } else if (_selectedDoneMissions) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LessonTaskCompletedScreen(
+                                                mission: _controller[index],
+                                                imageUrl: _controller[index]
+                                                    .images[0]
+                                                    .name,
+                                                money: _missionGetXController
+                                                    .money.value,
+                                              ),
+                                            ));
                                       }
                                     },
                                     child: Container(

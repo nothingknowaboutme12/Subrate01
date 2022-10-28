@@ -49,6 +49,8 @@ class UserPreferenceController {
     _sharedPreferences.setString('avatar', user.avatar ?? '');
     _sharedPreferences.setString('dob', user.dob ?? '');
     _sharedPreferences.setString('gender', user.gender ?? '');
+    _sharedPreferences.setString(
+        'profile_verified', user.profile_verified ?? '');
   }
 
   Future<void> saveUserCountry({
@@ -76,7 +78,8 @@ class UserPreferenceController {
     user.avatar = _sharedPreferences.getString('avatar') ?? '';
     user.dob = _sharedPreferences.getString('dob') ?? '';
     user.gender = _sharedPreferences.getString('gender') ?? '';
-
+    user.profile_verified =
+        _sharedPreferences.getString('profile_verified') ?? '';
     return user;
   }
 

@@ -232,15 +232,6 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> with Helpers {
                       SizedBox(
                         height: height * 0.050,
                       ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey),
-                          onPressed: () {},
-                          child: Text("Reaad more"),
-                        ),
-                      ),
                     ],
                   ),
                 ),

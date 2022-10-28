@@ -35,37 +35,42 @@ class MissionGetXController extends GetxController {
     getMissionCounts();
     getMoney();
     getRate();
-    refresh();
-    update();
   }
 
   Future<void> readlesson() async {
     lessons.value = await LessonApiController().getlesson();
+    lessons.refresh();
   }
 
   Future<void> readRemainingMissions() async {
     remainingMissions.value =
         await _missionApiController.getRemainingMissions() as List<Task>;
+    remainingMissions.refresh();
   }
 
   Future<void> readCompletedMissions() async {
     completedMissions.value =
         await _missionApiController.getCompletedMissions() as List<Task>;
+    completedMissions.refresh();
   }
 
   Future<void> getPoints() async {
     points.value = await _missionApiController.getPoints();
+    points.refresh();
   }
 
   Future<void> getMissionCounts() async {
     missionsCount.value = await _missionApiController.getMissionsCount();
+    missionsCount.refresh();
   }
 
   Future<void> getMoney() async {
     money.value = await _missionApiController.getMoney();
+    money.refresh();
   }
 
   void getRate() {
     rate.value = _missionApiController.getRate();
+    rate.refresh();
   }
 }

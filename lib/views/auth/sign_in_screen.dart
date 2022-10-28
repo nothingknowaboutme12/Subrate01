@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../app_localizations.dart';
@@ -53,7 +55,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
-
+    AppLocalizations? localizations = AppLocalizations.of(context);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -113,17 +115,29 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                           MyElevatedButton(
                             onPressed: () async {
                               try {
-                                await SocialAuth.GoogleSignin();
-                                showSnackBar(
-                                    context: context,
-                                    message: AppLocalizations.of(context)!
-                                        .login_successfully);
-                                Navigator.pushNamedAndRemoveUntil(context,
-                                    Routes.homeScreen, (route) => false);
+                                _changeProgressValue(value: null);
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => Container(),
+                                );
+                                bool status = await SocialAuth.GoogleSignin();
+                                if (status) {
+                                  showSnackBar(
+                                      context: context,
+                                      message:
+                                          localizations!.login_successfully);
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      Routes.homeScreen, (route) => false);
+                                }
+                                _changeProgressValue(value: 0);
+                                Navigator.pop(context);
                               } catch (e) {
+                                _changeProgressValue(value: 0);
+                                Navigator.pop(context);
+                                print(e.toString());
                                 showSnackBar(
                                   context: context,
-                                  message: e.toString(),
+                                  message: localizations!.cancel,
                                   error: true,
                                 );
                               }
@@ -140,8 +154,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                                   width: 10,
                                 ),
                                 Text(
-                                  AppLocalizations.of(context)!
-                                      .register_with_google,
+                                  localizations!.register_with_google,
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.black,
@@ -164,19 +177,39 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                           MyElevatedButton(
                             onPressed: () async {
                               try {
-                                await SocialAuth.FacebookSignin();
-                                showSnackBar(
-                                    context: context,
-                                    message: AppLocalizations.of(context)!
-                                        .login_successfully);
-                                Navigator.pushNamedAndRemoveUntil(context,
-                                    Routes.homeScreen, (route) => false);
+                                _changeProgressValue(value: null);
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => Container(),
+                                );
+                                bool status = await SocialAuth.FacebookSignin();
+                                if (status) {
+                                  showSnackBar(
+                                      context: context,
+                                      message:
+                                          localizations.login_successfully);
+                                  // Navigator.pushNamedAndRemoveUntil(context,
+                                  //     Routes.homeScreen, (route) => false);
+                                  _changeProgressValue(value: 0);
+                                  Navigator.pop(context);
+                                } else {
+                                  _changeProgressValue(value: 0);
+                                  Navigator.pop(context);
+                                }
                               } catch (e) {
-                                print(e);
+                                _changeProgressValue(value: 0);
+                                Navigator.pop(context);
                                 showSnackBar(
-                                    error: true,
-                                    context: context,
-                                    message: e.toString());
+                                  error: true,
+                                  context: context,
+                                  message:
+                                      "Something went wrong please try again",
+                                );
+                                showSnackBar(
+                                  error: true,
+                                  context: context,
+                                  message: e.toString(),
+                                );
                               }
                             },
                             child: Row(
@@ -191,8 +224,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                                   width: 10,
                                 ),
                                 Text(
-                                  AppLocalizations.of(context)!
-                                      .register_with_facebook,
+                                  localizations.register_with_facebook,
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.black,
@@ -213,22 +245,31 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                             height: height / 50,
                           ),
                           MyElevatedButton(
-                            onPressed: () async {
-                              print("Sign in with apple");
-                            },
+                            onPressed: Platform.isIOS
+                                ? () async {
+                                    print("Register with apple");
+                                  }
+                                : () {
+                                    showSnackBar(
+                                        context: context,
+                                        message: "Your are not apple user",
+                                        error: true);
+                                    return;
+                                  },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.asset(
                                   "assets/app_icons/apple.png",
+                                  fit: BoxFit.cover,
                                   width: width / 8.925,
-                                  height: socialNetworkSize,
+                                  height: 100,
                                 ),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 Text(
-                                  "Sign in with apple",
+                                  localizations.register_with_apple,
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.black,
@@ -263,7 +304,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                               ),
                             ),
                             Text(
-                              AppLocalizations.of(context)!.register_by_email,
+                              localizations.register_by_email,
                               style: const TextStyle(
                                 fontSize: 18,
                               ),
@@ -285,7 +326,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                         controller: _emailTextController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.email,
+                          hintText: localizations.email,
                           hintStyle: const TextStyle(
                             fontSize: 16,
                             color: Colors.black54,
@@ -334,7 +375,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                                   _isObscure = !_isObscure;
                                 });
                               }),
-                          hintText: AppLocalizations.of(context)!.password,
+                          hintText: localizations.password,
                           hintStyle: const TextStyle(
                             fontSize: 16,
                             color: Colors.black54,
@@ -378,7 +419,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                                 context, Routes.forgotPasswordScreen);
                           },
                           child: Text(
-                            AppLocalizations.of(context)!.forget_password,
+                            localizations.forget_password,
                             style: const TextStyle(
                               color: MissionDistributorColors.primaryColor,
                             ),
@@ -391,7 +432,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                       MyElevatedButton(
                         onPressed: () async => await performLogin(),
                         child: Text(
-                          AppLocalizations.of(context)!.sign_in,
+                          localizations.sign_in,
                           style: const TextStyle(
                             fontSize: 15,
                           ),
@@ -411,8 +452,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!
-                                .do_not_have_an_account,
+                            localizations.do_not_have_an_account,
                             style: const TextStyle(color: Colors.black),
                           ),
                           TextButton(
@@ -421,7 +461,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                                   context, Routes.signUpScreen);
                             },
                             child: Text(
-                              AppLocalizations.of(context)!.sign_up,
+                              localizations.sign_up,
                             ),
                           ),
                         ],
@@ -529,6 +569,7 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
       showSnackBar(
           context: context,
           message: AppLocalizations.of(context)!.login_successfully);
+      _changeProgressValue(value: status ? 1 : 0);
     } else {
       showSnackBar(
           context: context,

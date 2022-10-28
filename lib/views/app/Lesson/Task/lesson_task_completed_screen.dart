@@ -46,21 +46,25 @@ class _LessonTaskCompletedScreenState extends State<LessonTaskCompletedScreen> {
   late String missionMoney = MissionGetXController.to.money.value;
   late double rate = MissionGetXController.to.rate.value;
   late double wallet;
+  doall() async {
+    MissionGetXController.to.read();
+    DoMissionGetXController.to.totalPoint();
+  }
 
   @override
   void initState() {
+    doall();
     _url = widget.mission.link != null && widget.mission.link != ''
         ? Uri.parse(widget.mission.link)
         : Uri.parse('https://flutter.dev');
-    DoMissionGetXController.to.totalPoint();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    MissionGetXController.to.read();
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: MissionDistributorColors.scaffoldBackground,
       appBar: AppBar(
@@ -89,7 +93,7 @@ class _LessonTaskCompletedScreenState extends State<LessonTaskCompletedScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          AppLocalizations.of(context)!.mission,
+          "Compleled",
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -138,14 +142,14 @@ class _LessonTaskCompletedScreenState extends State<LessonTaskCompletedScreen> {
                           height: height / 4.5,
                           width: double.infinity,
                           child: widget.mission.images.isNotEmpty
-                              ? widget.mission.images[0].name.contains('http')
+                              ? widget.mission.images.contains('http')
                                   ? Image.asset(
                                       Assets.missionImage,
                                       fit: BoxFit.fill,
                                     )
                                   : Image.network(
                                       NetworkLink(
-                                        link: widget.mission.images[0].name,
+                                        link: widget.imageUrl,
                                       ).link,
                                       fit: BoxFit.fill,
                                     )
@@ -417,6 +421,7 @@ class _LessonTaskCompletedScreenState extends State<LessonTaskCompletedScreen> {
                         ],
                       ),
                     ),
+                    SizedBox(height: 40),
                   ],
                 ),
               ],

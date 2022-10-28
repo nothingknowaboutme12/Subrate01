@@ -78,9 +78,10 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    setState(() {
-      _connectionStatus = result;
-    });
+    if (mounted)
+      setState(() {
+        _connectionStatus = result;
+      });
   }
 
   testConnection() async {
@@ -99,77 +100,81 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
-
+    AppLocalizations? localizations = AppLocalizations.of(context);
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
-        if (mounted)
-          setState(() {
-            connection;
-          });
+        if (mounted) {
+          // setState(() {
+          connection;
+          // });
+        }
       },
     );
-    return RefreshIndicator(
-      color: MissionDistributorColors.primaryColor,
-      backgroundColor: MissionDistributorColors.secondaryColor,
-      onRefresh: () async {
-        MissionGetXController.to.read();
-      },
-      child: Scaffold(
-        backgroundColor: MissionDistributorColors.scaffoldBackground,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          title: Text(
-            "Lesson",
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.black,
-            ),
+    return Scaffold(
+      backgroundColor: MissionDistributorColors.scaffoldBackground,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text(
+          localizations!.lesson,
+          style: const TextStyle(
+            fontSize: 20,
+            color: Colors.black,
           ),
-          centerTitle: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(30),
-            ),
+        ),
+        centerTitle: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
           ),
-          leading: IconButton(
-            icon: const Icon(
-              Icons.account_balance_wallet_rounded,
-              color: MissionDistributorColors.primaryColor,
-              size: 26,
+        ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.account_balance_wallet_rounded,
+            color: MissionDistributorColors.primaryColor,
+            size: 26,
+          ),
+          onPressed: () {
+            Navigator.pushNamed(context, Routes.walletScreen);
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: CircleAvatar(
+              radius: 16,
+              backgroundImage:
+                  (UserPreferenceController().userInformation.avatar != ''
+                      ? (_connectionStatus.name != 'none' || connection)
+                          ? NetworkImage(UserPreferenceController()
+                                  .userInformation
+                                  .avatar ??
+                              '')
+                          : AssetImage(Assets.profileImage)
+                      : AssetImage(Assets.profileImage)) as ImageProvider,
             ),
             onPressed: () {
-              Navigator.pushNamed(context, Routes.walletScreen);
+              AppGetXController.to
+                  .changeSelectedBottomBarScreen(selectedIndex: 2);
             },
           ),
-          actions: [
-            IconButton(
-              icon: CircleAvatar(
-                radius: 16,
-                backgroundImage:
-                    (UserPreferenceController().userInformation.avatar != ''
-                        ? (_connectionStatus.name != 'none' || connection)
-                            ? NetworkImage(UserPreferenceController()
-                                    .userInformation
-                                    .avatar ??
-                                '')
-                            : AssetImage(Assets.profileImage)
-                        : AssetImage(Assets.profileImage)) as ImageProvider,
-              ),
-              onPressed: () {
-                AppGetXController.to
-                    .changeSelectedBottomBarScreen(selectedIndex: 2);
-              },
-            ),
-            SizedBox(width: width / 70),
-          ],
-        ),
-        body: OrientationBuilder(
+          SizedBox(width: width / 70),
+        ],
+      ),
+      body: RefreshIndicator(
+        color: MissionDistributorColors.primaryColor,
+        backgroundColor: MissionDistributorColors.secondaryColor,
+        onRefresh: () async {
+          await MissionGetXController.to.read();
+        },
+        child: OrientationBuilder(
           builder: (context, orientation) {
             if (orientation == Orientation.portrait) {
             } else {}
-            return ListView(
+            return
+                // Obx(
+                // () =>
+                ListView(
               children: [
                 Container(
                   margin: EdgeInsetsDirectional.only(
@@ -190,12 +195,12 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
                               Duration(seconds: 5),
                               () {
                                 isProgress = true;
-                                // setState(() {
-                                //   isProgress = true;
-                                // });
+                                setState(() {
+                                  isProgress = true;
+                                });
                               },
                             );
-                            List<Lesson> _controller = controller.lessons;
+                            List<Lesson> _controller = controller.lessons.value;
                             if (_controller.isNotEmpty) {
                               return ListView.builder(
                                 itemCount: _controller.length,
@@ -300,9 +305,7 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
                                                   const EdgeInsets.all(8.0),
                                               child: Text(
                                                 _controller[index].title ??
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .no_has_title,
+                                                    localizations.no_has_title,
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 16,
@@ -360,6 +363,7 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
                   ),
                 ),
               ],
+              // ),
             );
           },
         ),

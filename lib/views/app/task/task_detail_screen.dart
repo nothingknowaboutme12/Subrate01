@@ -83,14 +83,20 @@ class _MissionDetailsScreenState extends State<MissionDetailsScreen>
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    setState(() {
-      _connectionStatus = result;
-    });
+    if (mounted)
+      setState(() {
+        _connectionStatus = result;
+      });
+  }
+
+  doall() async {
+    await MissionGetXController.to.read();
   }
 
   @override
   void initState() {
     super.initState();
+    doall();
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
@@ -104,7 +110,6 @@ class _MissionDetailsScreenState extends State<MissionDetailsScreen>
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     _url = Uri.parse(widget.mission.link);
-    print("Image url${widget.mission.images.first.name}");
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -190,17 +195,17 @@ class _MissionDetailsScreenState extends State<MissionDetailsScreen>
                           height: height / 4.5,
                           width: double.infinity,
                           child: widget.mission.images.isNotEmpty
-                              ? !widget.mission.images[0].name.contains('http')
+                              ? widget.mission.images.contains('http')
                                   ? Image.asset(
                                       Assets.missionImage,
                                       fit: BoxFit.fill,
                                     )
                                   : Image.network(
-                                      widget.mission.images[0].name,
-                                      // NetworkLink(
-                                      //   link: widget.mission.images[0].name,
-                                      // ).link,
-                                      // fit: BoxFit.fill,
+                                      // widget.mission.images[0].name,
+                                      NetworkLink(
+                                        link: widget.mission.images[0].name,
+                                      ).link,
+                                      fit: BoxFit.fill,
                                     )
                               : Image.asset(
                                   Assets.missionImage,
@@ -428,9 +433,10 @@ class _MissionDetailsScreenState extends State<MissionDetailsScreen>
   }
 
   void _changeProgressValue({required double? value}) {
-    setState(() {
-      _progressValue = value;
-    });
+    if (mounted)
+      setState(() {
+        _progressValue = value;
+      });
   }
 
   Future<void> storeMission({required String image}) async {
@@ -471,7 +477,7 @@ class _MissionDetailsScreenState extends State<MissionDetailsScreen>
               context,
               MaterialPageRoute(
                 builder: (context) => MissionCompleteScreen(
-                  money: money.toString(),
+                  // money: money.toString(),
                   mission: widget.mission,
                   imageUrl: widget.mission.images.isNotEmpty
                       ? widget.mission.images[0].name

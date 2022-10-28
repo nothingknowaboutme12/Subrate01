@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:subrate/controllers/storage/local/prefs/user_preference_controller.dart';
 import 'package:subrate/controllers/storage/network/api/api_settings.dart';
 import 'package:subrate/core/res/network.dart';
@@ -23,7 +24,9 @@ import '../../models/network_link.dart';
 class KycScreen extends StatefulWidget {
   // static const String routName = "KycScreen";
   bool isSignUP;
-  KycScreen({Key? key, required this.isSignUP}) : super(key: key);
+  bool wallet;
+  KycScreen({Key? key, required this.isSignUP, this.wallet = false})
+      : super(key: key);
 
   @override
   State<KycScreen> createState() => _KycScreenState();
@@ -37,7 +40,6 @@ class _KycScreenState extends State<KycScreen> with Helpers {
   late TextEditingController email;
   late TextEditingController phone;
   late TextEditingController DBirth;
-  List<DropdownMenuItem> citiesItem = [];
   final List<String> item = ["License", "Passport", "National"];
   String? selectedValue;
   String? ImageUrl;
@@ -82,13 +84,13 @@ class _KycScreenState extends State<KycScreen> with Helpers {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
-    print("Info Image$InfoImage");
+    AppLocalizations? localizations = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          "Kyc Validation",
+          localizations!.kyc_valid,
           style:
               const TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
         ),
@@ -114,7 +116,7 @@ class _KycScreenState extends State<KycScreen> with Helpers {
             margin: const EdgeInsets.symmetric(horizontal: 20),
             width: width,
             height: height,
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             child: ListView(
               shrinkWrap: true,
               children: [
@@ -180,12 +182,14 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                               barrierDismissible: true,
                                               builder: (context) =>
                                                   SimpleDialog(
-                                                title:
-                                                    Text("Choose image source"),
+                                                title: Text(
+                                                    localizations.selectImage),
                                                 children: [
                                                   SimpleDialogOption(
                                                       child: ListTile(
-                                                        title: Text("Camera"),
+                                                        title: Text(
+                                                            localizations
+                                                                .camera),
                                                         leading: Icon(
                                                           Icons.camera_alt,
                                                         ),
@@ -209,7 +213,9 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                                       }),
                                                   SimpleDialogOption(
                                                       child: ListTile(
-                                                        title: Text("Gallery"),
+                                                        title: Text(
+                                                            localizations
+                                                                .gallery),
                                                         leading: Icon(
                                                           Icons.image,
                                                         ),
@@ -246,28 +252,28 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                         controller: name,
                         enabled: false,
                         keyboard: TextInputType.name,
-                        title: "First Name",
+                        title: localizations.name,
                       ),
                       SizedBox(height: height / 42.29),
                       customtextfield(
                         controller: email,
-                        title: "Email",
+                        title: localizations.email,
                         enabled: false,
                         keyboard: TextInputType.emailAddress,
                         valid: (value) {
                           if (value!.isEmpty) {
                             showSnackBar(
                                 context: context,
-                                message: "Enter your email",
+                                message: localizations.enter_email,
                                 error: true);
-                            return "please enter your email";
+                            return localizations.enter_email;
                           }
                           if (!value.contains('@')) {
                             showSnackBar(
                                 context: context,
-                                message: "Enter your last valid email",
+                                message: localizations.enter_correct_email,
                                 error: true);
-                            return "please enter your valid email";
+                            return localizations.enter_correct_email;
                           }
                         },
                       ),
@@ -277,22 +283,22 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                       customtextfield(
                         controller: phone,
                         enabled: widget.isSignUP ? false : true,
-                        title: "Phone",
+                        title: localizations.phone_number,
                         keyboard: TextInputType.phone,
                         valid: (value) {
                           if (value!.isEmpty) {
                             showSnackBar(
                                 context: context,
-                                message: "Enter your phone number",
+                                message: localizations.enter_phone_number,
                                 error: true);
-                            return "please enter your phone number";
+                            return localizations.enter_phone_number;
                           }
                         },
                       ),
                       SizedBox(height: height / 42.29),
                       widget.isSignUP
                           ? customtextfield(
-                              title: "Date of birth",
+                              title: localizations.birthDate,
                               controller: DBirth,
                               enabled: false,
                             )
@@ -325,7 +331,8 @@ class _KycScreenState extends State<KycScreen> with Helpers {
 
                                                     // Close the modal
                                                     CupertinoButton(
-                                                      child: const Text('OK'),
+                                                      child: Text(
+                                                          localizations.ok),
                                                       onPressed: () =>
                                                           Navigator.of(context)
                                                               .pop(),
@@ -353,7 +360,11 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                               .toString(); //set output date to TextField value.
                                         });
                                       } else {
-                                        // print("Date is not selected");
+                                        showSnackBar(
+                                            context: context,
+                                            message:
+                                                localizations.date_not_selected,
+                                            error: true);
                                       }
                                     },
                               child: Container(
@@ -364,7 +375,7 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                 margin: EdgeInsets.symmetric(horizontal: 3),
                                 child: Text(
                                   DBirth.text.isEmpty
-                                      ? "Choose your date of birth"
+                                      ? localizations.date_not_selected
                                       : DBirth.text.toString(),
                                   style: const TextStyle(
                                     fontSize: 16,
@@ -385,11 +396,11 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                             context: context,
                             barrierDismissible: true,
                             builder: (context) => SimpleDialog(
-                              title: Text("Choose image source"),
+                              title: Text(localizations.selectImage),
                               children: [
                                 SimpleDialogOption(
                                     child: ListTile(
-                                      title: Text("Camera"),
+                                      title: Text(localizations.camera),
                                       leading: Icon(
                                         Icons.camera_alt,
                                       ),
@@ -407,7 +418,7 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                     }),
                                 SimpleDialogOption(
                                     child: ListTile(
-                                      title: Text("Gallery"),
+                                      title: Text(localizations.gallery),
                                       leading: Icon(
                                         Icons.image,
                                       ),
@@ -435,8 +446,8 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                           margin: EdgeInsets.symmetric(horizontal: 3),
                           child: Text(
                             identityImage == null
-                                ? "Upload your id"
-                                : "Selected",
+                                ? localizations.uploadid
+                                : localizations.select,
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
@@ -458,7 +469,7 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton2(
                             hint: Text(
-                              'Select an id type',
+                              localizations.idtype,
                               style: TextStyle(
                                 fontSize: 16,
                                 //     color: Colors.grey,
@@ -498,14 +509,14 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                             if (identityImage == null) {
                               showSnackBar(
                                   context: context,
-                                  message: "Select image",
+                                  message: localizations.selectImage,
                                   error: true);
                               return;
                             } else if (selectedValue == null) {
                               {
                                 showSnackBar(
                                     context: context,
-                                    message: "Selected id type",
+                                    message: localizations.idtype,
                                     error: true);
                                 return;
                               }
@@ -513,20 +524,24 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                               {
                                 showSnackBar(
                                     context: context,
-                                    message: "Select your date of birth",
+                                    message: localizations.date_not_selected,
                                     error: true);
                                 return;
                               }
                             } else
-                              // try {
-                              await validate();
-                            // } catch (e) {
-                            //   print(e);
-                            // }
+                              try {
+                                await validate();
+                              } catch (e) {
+                                _changeProgressValue(value: 0);
+                                showSnackBar(
+                                    context: context,
+                                    message: e.toString(),
+                                    error: true);
+                              }
                           }
                         },
-                        child: const Text(
-                          " Kyc validation",
+                        child: Text(
+                          localizations.kyc_valid,
                           style: TextStyle(
                             fontSize: 15,
                           ),
@@ -563,14 +578,13 @@ class _KycScreenState extends State<KycScreen> with Helpers {
   bool status = false;
 
   Future<void> validate() async {
-    _changeProgressValue(value: 0);
+    _changeProgressValue(value: null);
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => Container());
     // _changeProgressValue(value: 0);
     String token = UserPreferenceController().token;
-    print("I am going");
     var response = (await http.post(Uri.parse(ApiSettings.kyc),
         body: ImageUrl!.isNotEmpty
             ? {
@@ -601,31 +615,24 @@ class _KycScreenState extends State<KycScreen> with Helpers {
               AuthorizationHeader(token: token).token,
         }));
 
-    print("response code ${response.statusCode}");
     if (response.statusCode == 200 || response.statusCode == 201) {
-      _changeProgressValue(value: null);
-      showDialog(
-        context: context,
-        builder: (context) => const Center(),
-      );
       showSnackBar(context: context, message: "Validation submit successfully");
-      // widget.isSignUP
-      //     ?
-      Navigator.pushReplacementNamed(
-        context,
-        await Routes.homeScreen,
-      );
-      // : Navigator.pushAndRemoveUntil(context, Routes.homeScreen, (route) => false);
-      // _changeProgressValue(value: null);
+      widget.wallet
+          ? Navigator.pushNamed(context, Routes.walletScreen)
+          : Navigator.pushReplacementNamed(
+              context,
+              await Routes.homeScreen,
+            );
     } else {
-      _changeProgressValue(value: null);
+      _changeProgressValue(value: 0);
       Navigator.pop(context);
       Navigator.pop(context);
       showSnackBar(
           context: context,
-          message: "Something went wrong please try again",
+          message: "Something went wrong, please try again",
           error: true);
     }
+    _changeProgressValue(value: 0.0);
   }
 }
 
@@ -653,7 +660,6 @@ class customtextfield extends StatelessWidget {
       keyboardType: keyboard,
       decoration: InputDecoration(
         hintText: title,
-
         hintStyle: const TextStyle(
           fontSize: 16,
           color: Colors.grey,

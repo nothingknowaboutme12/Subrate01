@@ -9,7 +9,27 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get welcome_to => 'اهلا بك في';
+  @override
+  String get ok => 'موافق';
+  @override
+  String get lesson => 'الدروس';
+  @override
+  String get date_not_selected => 'لم يتم تحديد التاريخ';
+  @override
+  String get kyc_valid => 'التحقق من صحة Kyc';
 
+  @override
+  String get selectImage => 'اختر صورة';
+  @override
+  String get camera => 'آلة تصوير';
+  @override
+  String get gallery => 'صالة عرض';
+  @override
+  String get select => 'المحدد';
+  @override
+  String get uploadid => 'تحميل هويتك';
+  @override
+  String get idtype => 'حدد نوع الهوية';
   @override
   String get to_follow_please => 'للمتابعة من فضلك';
 
@@ -20,7 +40,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get or => 'او';
 
   @override
-  String get desc_log_in => 'سجل دخولك , او قم بإنشاء حساب اذا لم يكن لديك حساب';
+  String get desc_log_in =>
+      'سجل دخولك , او قم بإنشاء حساب اذا لم يكن لديك حساب';
 
   @override
   String get sign_in => 'تسجيل الدخول';
@@ -45,6 +66,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get register_with_facebook => 'Register with Facebook';
+  @override
+  String get register_with_apple => 'Register with Apple';
 
   @override
   String get do_not_have_an_account => 'ليس لديك حساب ؟';
@@ -95,10 +118,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forgot_password => 'هل نسيت كلمة المرور؟';
 
   @override
-  String get need_help_with_password => 'هل انت بحاجة الى مساعدة في كلمة المرور؟';
+  String get need_help_with_password =>
+      'هل انت بحاجة الى مساعدة في كلمة المرور؟';
 
   @override
-  String get you_can_retrieve_your_password => 'يمكنك استرداد كلمة المرور الخاصة بك عن طريق إدخال بريدك الإلكتروني في مربع النص أدناه';
+  String get you_can_retrieve_your_password =>
+      'يمكنك استرداد كلمة المرور الخاصة بك عن طريق إدخال بريدك الإلكتروني في مربع النص أدناه';
 
   @override
   String get put_your_email_here => 'ضع بريدك الإلكتروني هنا';
@@ -107,7 +132,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get send => 'إرسال';
 
   @override
-  String get password_reset_email_sent => 'تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور';
+  String get password_reset_email_sent =>
+      'تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور';
 
   @override
   String get qr_code => 'QR رمز';
@@ -119,10 +145,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scan_code => 'مسح الرمز';
 
   @override
-  String get scan_code_on_card => 'يجب عليك مسح الرمز الموجود على درج البطاقة لتتمكن من استخدام ميزات التطبيق';
+  String get scan_code_on_card =>
+      'يجب عليك مسح الرمز الموجود على درج البطاقة لتتمكن من استخدام ميزات التطبيق';
 
   @override
-  String get verify_email => 'تحقق من البريد الإلكتروني لتسجيل الدخول إلى التطبيق!';
+  String get verify_email =>
+      'تحقق من البريد الإلكتروني لتسجيل الدخول إلى التطبيق!';
 
   @override
   String get network_request_failed => 'فشل طلب الشبكة';
@@ -143,7 +171,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get unknown_error => 'حصل خطأ ما!';
 
   @override
-  String get email_already_in_use => 'عنوان البريد الإلكتروني قيد الاستخدام بالفعل من قبل حساب آخر.';
+  String get email_already_in_use =>
+      'عنوان البريد الإلكتروني قيد الاستخدام بالفعل من قبل حساب آخر.';
 
   @override
   String get change_password => 'تغيير كلمة المرور';
@@ -173,16 +202,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get wrong_old_password => 'كلمة المرور القديمة خاطئة!';
 
   @override
-  String get enter_correct_old_password => 'أدخل كلمة المرور القديمة بشكل صحيح!';
+  String get enter_correct_old_password =>
+      'أدخل كلمة المرور القديمة بشكل صحيح!';
 
   @override
-  String get enter_correct_new_password => 'أدخل كلمة المرور الجديدة بشكل صحيح!';
+  String get enter_correct_new_password =>
+      'أدخل كلمة المرور الجديدة بشكل صحيح!';
 
   @override
   String get two_password_not_equaled => 'كلمات المرور غير متساوية!';
 
   @override
-  String get enter_correct_confirm_new_password => 'أدخل كلمة المرور الجديدة مرة أخرى بشكل صحيح!';
+  String get enter_correct_confirm_new_password =>
+      'أدخل كلمة المرور الجديدة مرة أخرى بشكل صحيح!';
 
   @override
   String get change_password_successfully => 'تم تغيير كلمة المرور بنجاح';
@@ -305,10 +337,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get interactive_self_learning => 'التعلم الذاتي التفاعلي';
 
   @override
-  String get desc_on_boarding_one => 'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى';
+  String get desc_on_boarding_one =>
+      'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى';
 
   @override
-  String get machine_learning_based_education => 'التعليم القائم على التعلم الآلي';
+  String get machine_learning_based_education =>
+      'التعليم القائم على التعلم الآلي';
 
   @override
   String get explore_the_alphabet_and_more => 'استكشف الحروف الأبجدية والمزيد';
@@ -320,7 +354,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get learn_how_to_play => 'تعلم كيف تلعب';
 
   @override
-  String get demonstration_video_desc => 'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص.';
+  String get demonstration_video_desc =>
+      'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص.';
 
   @override
   String get settings => 'الإعدادات';
@@ -341,7 +376,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get select_language => 'اللغة';
 
   @override
-  String get about_app_desc => 'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.\nإذا كنت تحتاج إلى عدد أكبر من الفقرات يتيح لك مولد النص العربى زيادة عدد الفقرات كما تريد، النص لن يبدو مقسما ولا يحوي أخطاء لغوية، مولد النص العربى مفيد لمصممي المواقع على وجه الخصوص، حيث يحتاج العميل فى كثير من الأحيان أن يطلع على صورة حقيقية لتصميم الموقع.\nومن هنا وجب على المصمم أن يضع نصوصا مؤقتة على التصميم ليظهر للعميل الشكل كاملاً،دور مولد النص العربى أن يوفر على المصمم عناء البحث عن نص بديل لا علاقة له بالموضوع الذى يتحدث عنه التصميم فيظهر بشكل لا يليق.\n';
+  String get about_app_desc =>
+      'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.\nإذا كنت تحتاج إلى عدد أكبر من الفقرات يتيح لك مولد النص العربى زيادة عدد الفقرات كما تريد، النص لن يبدو مقسما ولا يحوي أخطاء لغوية، مولد النص العربى مفيد لمصممي المواقع على وجه الخصوص، حيث يحتاج العميل فى كثير من الأحيان أن يطلع على صورة حقيقية لتصميم الموقع.\nومن هنا وجب على المصمم أن يضع نصوصا مؤقتة على التصميم ليظهر للعميل الشكل كاملاً،دور مولد النص العربى أن يوفر على المصمم عناء البحث عن نص بديل لا علاقة له بالموضوع الذى يتحدث عنه التصميم فيظهر بشكل لا يليق.\n';
 
   @override
   String get how_to_use_the_app => 'كيف تستخدم التطبيق';
@@ -359,7 +395,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile => 'الملف الشخصي';
 
   @override
-  String get wallet_desc => 'اذهب الى محفظتك للاطلاع بالتفصيل على عملياتك داخل التطبيق';
+  String get wallet_desc =>
+      'اذهب الى محفظتك للاطلاع بالتفصيل على عملياتك داخل التطبيق';
 
   @override
   String get total_earnings => 'إجمالي الأرباح';

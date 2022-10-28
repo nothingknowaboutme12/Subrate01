@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:subrate/views/app/task/main_screen.dart';
+import 'package:subrate/views/app/task/task_completed_screen.dart';
 
 import '../../../app_localizations.dart';
 import '../../../controllers/getX/app_getX_controller.dart';
@@ -102,11 +103,9 @@ class _TaskScreenState extends State<TaskScreen> with Helpers {
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
-        if (mounted) {
-          setState(() {
-            connection;
-          });
-        }
+        connection;
+
+        // }
       },
     );
     return RefreshIndicator(
@@ -262,14 +261,16 @@ class _TaskScreenState extends State<TaskScreen> with Helpers {
                               Duration(seconds: 5),
                               () {
                                 isProgress = true;
-                                // setState(() {
-                                //   isProgress = true;
-                                // });
+
+                                if (mounted)
+                                  setState(() {
+                                    isProgress = true;
+                                  });
                               },
                             );
                             List<Task> _controller = _selectedDoneMissions
-                                ? controller.completedMissions
-                                : controller.remainingMissions;
+                                ? controller.completedMissions.value
+                                : controller.remainingMissions.value;
                             if (_controller.isNotEmpty) {
                               return ListView.builder(
                                 itemCount: _controller.length,
@@ -280,14 +281,24 @@ class _TaskScreenState extends State<TaskScreen> with Helpers {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) {
-                                            // print(_controller[index]
-                                            //     .images[index]
-                                            //     .name);
                                             return MissionDetailsScreen(
                                               mission: _controller[index],
                                             );
                                           }),
                                         );
+                                      } else if (_selectedDoneMissions) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MissionCompleteScreen(
+                                                      mission:
+                                                          _controller[index],
+                                                      imageUrl:
+                                                          _controller[index]
+                                                              .images[0]
+                                                              .name),
+                                            ));
                                       }
                                     },
                                     child: Container(

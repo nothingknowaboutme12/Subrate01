@@ -79,13 +79,14 @@ class _ProfileScreenState extends State<ProfileScreen> with Helpers {
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    setState(() {
-      _connectionStatus = result;
-      if (result.name != 'none') {
-        connection = true;
-      }
-      print(_connectionStatus.name);
-    });
+    if (mounted)
+      setState(() {
+        _connectionStatus = result;
+        if (result.name != 'none') {
+          connection = true;
+        }
+        print(_connectionStatus.name);
+      });
   }
 
   double itemSize = 800 / 6;
@@ -445,7 +446,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helpers {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Icon(
-                                  Icons.language,
+                                  Icons.translate,
                                   size: width / 20,
                                   color: MissionDistributorColors.primaryColor,
                                 ),

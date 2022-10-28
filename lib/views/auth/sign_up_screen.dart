@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../app_localizations.dart';
@@ -71,7 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
-
+    AppLocalizations? localizations = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -103,13 +104,13 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
             margin: const EdgeInsets.symmetric(horizontal: 20),
             width: width,
             height: height,
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             child: ListView(
               children: [
-                LinearProgressIndicator(
-                  value: _progressValue,
-                  backgroundColor: Colors.transparent,
-                ),
+                // LinearProgressIndicator(
+                //   value: _progressValue,
+                //   backgroundColor: Colors.transparent,
+                // ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -157,11 +158,13 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                                         barrierDismissible: true,
                                         builder: (context) {
                                           return SimpleDialog(
-                                            title: Text("Choose image source"),
+                                            title: Text(
+                                                localizations!.selectImage),
                                             children: [
                                               SimpleDialogOption(
                                                   child: ListTile(
-                                                    title: Text("Camera"),
+                                                    title: Text(
+                                                        localizations.camera),
                                                     leading: Icon(
                                                       Icons.camera_alt,
                                                     ),
@@ -184,7 +187,8 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                                                   }),
                                               SimpleDialogOption(
                                                   child: ListTile(
-                                                    title: Text("Gallery"),
+                                                    title: Text(
+                                                        localizations.gallery),
                                                     leading: Icon(
                                                       Icons.image,
                                                     ),
@@ -220,7 +224,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                       controller: _usernameTextController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.name,
+                        hintText: localizations!.name,
                         hintStyle: const TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
@@ -263,7 +267,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                       controller: _emailTextController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.email,
+                        hintText: localizations.email,
                         hintStyle: const TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
@@ -300,7 +304,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                       controller: _mobile,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.numbers,
+                        hintText: localizations.numbers,
                         hintStyle: const TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
@@ -367,7 +371,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
 
                                             // Close the modal
                                             CupertinoButton(
-                                              child: const Text('OK'),
+                                              child: Text(localizations.ok),
                                               onPressed: () =>
                                                   Navigator.of(context).pop(),
                                             )
@@ -398,7 +402,10 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                                       .toString(); //set output date to TextField value.
                                 });
                               } else {
-                                print("Date is not selected");
+                                showSnackBar(
+                                    context: context,
+                                    message: localizations.date_not_selected,
+                                    error: true);
                               }
                             },
                       child: Container(
@@ -409,7 +416,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                         margin: EdgeInsets.symmetric(horizontal: 3),
                         child: Text(
                           selectedDate == null
-                              ? "Choose your date of birth"
+                              ? localizations.date_not_selected
                               : selectedDate.toString(),
                           style: TextStyle(
                             fontSize: 16,
@@ -438,7 +445,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                                 _isObscure = !_isObscure;
                               });
                             }),
-                        hintText: AppLocalizations.of(context)!.password,
+                        hintText: localizations.password,
                         hintStyle: const TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
@@ -485,8 +492,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                                 _isObscureConfirm = !_isObscureConfirm;
                               });
                             }),
-                        hintText:
-                            AppLocalizations.of(context)!.confirm_password,
+                        hintText: localizations.confirm_password,
                         hintStyle: const TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
@@ -522,7 +528,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                     Align(
                       alignment: AlignmentDirectional.centerStart,
                       child: Text(
-                        AppLocalizations.of(context)!.password_length,
+                        localizations.password_length,
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
@@ -535,7 +541,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                         if (image == null) {
                           showSnackBar(
                             context: context,
-                            message: "please chose an image",
+                            message: localizations.selectImage,
                             error: true,
                           );
                           return;
@@ -553,7 +559,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                         ],
                       ),
                       child: Text(
-                        AppLocalizations.of(context)!.sign_up,
+                        localizations.sign_up,
                         style: const TextStyle(
                           fontSize: 15,
                         ),
@@ -564,7 +570,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.already_have_an_account,
+                          localizations.already_have_an_account,
                           style: const TextStyle(color: Colors.black),
                         ),
                         TextButton(
@@ -572,7 +578,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                             Navigator.pushReplacementNamed(
                                 context, Routes.signInScreen);
                           },
-                          child: Text(AppLocalizations.of(context)!.sign_in),
+                          child: Text(localizations.sign_in),
                         ),
                       ],
                     ),
@@ -584,12 +590,6 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
         },
       ),
     );
-  }
-
-  void _changeProgressValue({required double? value}) {
-    setState(() {
-      _progressValue = value;
-    });
   }
 
   Future<void> performSignUp() async {
@@ -636,9 +636,6 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
           : null;
       _mobilerror =
           !phone ? AppLocalizations.of(context)!.enter_phone_number : null;
-      // selectedDate = selectedDate == null
-      //     ? AppLocalizations.of(context)!.enter_birthdate
-      //     : null;
     });
     if (username && email && password && confirmPassword && phone) {
       return true;
@@ -685,7 +682,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
       } else {
         showSnackBar(
             context: context,
-            message: 'Password must be greater than or equal to 9',
+            message: AppLocalizations.of(context)!.password_length,
             error: true,
             time: 1);
         return false;
@@ -724,8 +721,13 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
   }
 
   Future<void> signUp() async {
-    _changeProgressValue(value: 0);
-    showDialog(context: context, builder: (context) => Container());
+    showDialog(
+        context: context,
+        builder: (context) => Center(
+              child: CircularProgressIndicator(
+                color: MissionDistributorColors.primaryColor,
+              ),
+            ));
     bool status = await AuthApiController().register(
         name: _usernameTextController.text,
         email: _emailTextController.text,
@@ -734,37 +736,26 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
         date: selectedDate.toString(),
         phone: _mobile.text,
         context: context);
-    _changeProgressValue(value: status ? 1 : 0);
     if (status) {
-      showSnackBar(
-          context: context,
-          message: AppLocalizations.of(context)!.sign_up_successfully);
       await login();
     } else {
       showSnackBar(
           context: context,
           message: AppLocalizations.of(context)!.sign_up_failed,
           error: true);
-      _changeProgressValue(value: 0);
       Navigator.pop(context);
     }
   }
 
   Future<void> login() async {
-    _changeProgressValue(value: null);
-    showDialog(
-      context: context,
-      builder: (context) => const Center(),
-    );
     bool status = await AuthApiController().login(
       email: _emailTextController.text.trim(),
       password: _passwordTextController.text.trim(),
     );
-    _changeProgressValue(value: status ? 1 : 0);
     if (status) {
       showSnackBar(
           context: context,
-          message: AppLocalizations.of(context)!.login_successfully);
+          message: AppLocalizations.of(context)!.sign_up_successfully);
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -772,10 +763,11 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
         ),
         (route) => false,
       );
+      Navigator.of(context);
     } else {
       showSnackBar(
           context: context,
-          message: AppLocalizations.of(context)!.login_failed,
+          message: AppLocalizations.of(context)!.sign_up_failed,
           error: true);
       Navigator.pop(context);
     }

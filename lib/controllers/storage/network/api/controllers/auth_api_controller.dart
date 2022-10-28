@@ -52,8 +52,6 @@ class AuthApiController with Helpers {
       HttpHeaders.authorizationHeader: AuthorizationHeader(token: token).token,
       HttpHeaders.acceptHeader: 'application/json',
     });
-
-    print(response.statusCode);
     if (response.statusCode == 200 || response.statusCode == 401) {
       await UserPreferenceController().logout();
       return true;

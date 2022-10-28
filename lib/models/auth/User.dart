@@ -11,6 +11,7 @@ class User {
   late String? gender;
   late String createdAt;
   late String updatedAt;
+  late String profile_verified;
 
   User();
 
@@ -25,5 +26,6 @@ class User {
     gender = json['gender'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    updatedAt = json['profile_verified'];
   }
 }

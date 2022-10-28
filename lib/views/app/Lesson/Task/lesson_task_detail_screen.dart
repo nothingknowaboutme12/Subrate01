@@ -29,7 +29,7 @@ import 'lesson_task_completed_screen.dart';
 // ignore: must_be_immutable
 class LessonTaskDetail extends StatefulWidget {
   Task mission;
-
+  // String ImageUrl;
   LessonTaskDetail({required this.mission, Key? key}) : super(key: key);
 
   @override
@@ -39,6 +39,7 @@ class LessonTaskDetail extends StatefulWidget {
 class _LessonTaskDetailState extends State<LessonTaskDetail> with Helpers {
   late double width;
   late double height;
+
   double buttonHeight = 803 / 23.74;
 
   Uri _url = Uri.parse('https://flutter.dev');
@@ -91,6 +92,9 @@ class _LessonTaskDetailState extends State<LessonTaskDetail> with Helpers {
   void initState() {
     super.initState();
     initConnectivity();
+    _url = widget.mission.link != null && widget.mission.link != ''
+        ? Uri.parse(widget.mission.link)
+        : Uri.parse('https://flutter.dev');
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     imagePicker = ImagePicker();
@@ -102,7 +106,10 @@ class _LessonTaskDetailState extends State<LessonTaskDetail> with Helpers {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
-    _url = Uri.parse(widget.mission.link);
+
+    MissionGetXController.to.read();
+
+    print("image url: ${widget.mission.images[0].name}");
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -187,18 +194,18 @@ class _LessonTaskDetailState extends State<LessonTaskDetail> with Helpers {
                           ),
                           height: height / 4.5,
                           width: double.infinity,
-                          child: widget.mission.images.isNotEmpty
-                              ? !widget.mission.images[0].name.contains('http')
+                          child: widget.mission.images[0].name.isNotEmpty
+                              ? widget.mission.images[0].name.contains('http')
                                   ? Image.asset(
                                       Assets.missionImage,
                                       fit: BoxFit.fill,
                                     )
                                   : Image.network(
-                                      widget.mission.images[0].name,
-                                      // NetworkLink(
-                                      //   link: widget.mission.images[0].name,
-                                      // ).link,
-                                      // fit: BoxFit.fill,
+                                      // widget.Im,
+                                      NetworkLink(
+                                        link: widget.mission.images.first.name,
+                                      ).link,
+                                      fit: BoxFit.fill,
                                     )
                               : Image.asset(
                                   Assets.missionImage,

@@ -19,7 +19,7 @@ class LessonAuth {
         await http.get(Uri.parse(ApiSettings.lesson), headers: {
       HttpHeaders.authorizationHeader: AuthorizationHeader(token: token).token,
     });
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       var decodeData = await jsonDecode(response.body);
       print(response.body);
       BaseResponse baseResponse = BaseResponse.fromJson(decodeData);
