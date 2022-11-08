@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "634078314404",
+    "project_id": "subrate-47d81",
+    "storage_bucket": "subrate-47d81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634078314404:android:60d06d3ed7cbbe436f0b31",
+        "android_client_info": {
+          "package_name": "com.Subrate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "634078314404-tp1kue6rcqh56jlss3c1seua28j57mbj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuHTfYjehMdYccM-xw_lgS8DfzKt7NtFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "634078314404-tp1kue6rcqh56jlss3c1seua28j57mbj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

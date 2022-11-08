@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:subrate/views/app/task/main_screen.dart';
 import 'package:subrate/views/auth/kyc_screen.dart';
 
-import '../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../core/res/assets.dart';
 import '../../core/res/mission_distributor_colors.dart';
 import '../../core/res/routes.dart';

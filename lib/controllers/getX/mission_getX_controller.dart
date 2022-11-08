@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:subrate/models/Lesson/lesson.dart';
 import 'package:subrate/models/Lesson/lesson_api.dart';
@@ -7,6 +8,8 @@ import '../../models/Task/task_count.dart';
 import '../storage/network/api/controllers/mission_api_controller.dart';
 
 class MissionGetXController extends GetxController {
+  // String lessontaskid;
+  // MissionGetXController(this.lessontaskid);
   RxList<Task> missions = <Task>[].obs;
   RxList<Lesson> lessons = <Lesson>[].obs;
   RxList<Task> remainingMissions = <Task>[].obs;
@@ -28,6 +31,10 @@ class MissionGetXController extends GetxController {
   }
 
   Future<void> read() async {
+    if (kDebugMode) {
+      print("#NEETHAS");
+      print("READING MISSION GETX CONTROLLER");
+    }
     readRemainingMissions();
     readCompletedMissions();
     readlesson();
@@ -35,6 +42,8 @@ class MissionGetXController extends GetxController {
     getMissionCounts();
     getMoney();
     getRate();
+    refresh();
+    update();
   }
 
   Future<void> readlesson() async {
@@ -44,8 +53,12 @@ class MissionGetXController extends GetxController {
 
   Future<void> readRemainingMissions() async {
     remainingMissions.value =
-        await _missionApiController.getRemainingMissions() as List<Task>;
+        await _missionApiController.getRemainingMissions();
     remainingMissions.refresh();
+    if (kDebugMode) {
+      print("Got remaining mission values");
+      print(remainingMissions);
+    }
   }
 
   Future<void> readCompletedMissions() async {

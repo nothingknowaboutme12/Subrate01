@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../controllers/getX/app_getX_controller.dart';
 import '../../../controllers/getX/mission_getX_controller.dart';
 import '../../../controllers/storage/local/prefs/user_preference_controller.dart';

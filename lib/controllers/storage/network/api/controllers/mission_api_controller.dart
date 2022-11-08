@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:subrate/models/Lesson/lesson.dart';
 
 import '../../../../../models/Task/points.dart';
@@ -42,9 +43,12 @@ class MissionApiController {
   }
 
   Future<http.Response> responseApiGetMissions(String url) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String onToken = prefs.getString("token") ?? 'null';
     var link = Uri.parse(url);
     return await http.get(link, headers: {
-      HttpHeaders.authorizationHeader: AuthorizationHeader(token: token).token,
+      HttpHeaders.authorizationHeader:
+          AuthorizationHeader(token: onToken).token,
     });
   }
 
@@ -69,7 +73,7 @@ class MissionApiController {
     var response = await http.get(url, headers: {
       HttpHeaders.authorizationHeader: AuthorizationHeader(token: token).token,
     });
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       var jsonResponse = jsonDecode(response.body);
       Points points = Points.fromJson(jsonResponse['data']);
       return points.total;

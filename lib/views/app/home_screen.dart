@@ -1,13 +1,16 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:subrate/controllers/getX/mission_getX_controller.dart';
+import 'package:subrate/views/app/notification_screen.dart';
 import 'package:subrate/views/app/profile_screen.dart';
 
-import '../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../controllers/getX/app_getX_controller.dart';
 import '../../controllers/storage/local/prefs/user_preference_controller.dart';
 import '../../core/res/assets.dart';
 import '../../models/app/bottom_navigation_bar_screen.dart';
+import '../../models/notification/notification_services.dart';
 import 'Lesson/lesson_screen.dart';
 import 'task/main_screen.dart';
 import 'task/task_screen.dart';
@@ -23,9 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
   late double width;
   late double height;
 
-
   final AppGetXController _appGetXController = Get.put(AppGetXController());
-
+  final MissionGetXController _missionGetXController =
+      Get.put(MissionGetXController());
   final List<BottomNavigationBarScreen> _bnScreens =
       <BottomNavigationBarScreen>[
     BottomNavigationBarScreen(
@@ -57,13 +60,56 @@ class _HomeScreenState extends State<HomeScreen> {
                 Assets.profileImage,
               ) as ImageProvider,
       ),
-  
     ),
   ];
 
   @override
   void initState() {
-  
+    _missionGetXController.read();
+
+    FirebaseMessaging.instance.getInitialMessage().then(
+      (message) {
+        print("FirebaseMessaging.instance.getInitialMessage");
+        if (message != null) {
+          print("New Notification");
+          // if (message.data['_id'] != null) {
+          //   Navigator.of(context).push(
+          //     MaterialPageRoute(
+          //       builder: (context) => DemoScreen(
+          //         id: message.data['_id'],
+          //       ),
+          //     ),
+          //   );
+          // }
+        }
+      },
+    );
+
+    // 2. This method only call when App in forground it mean app must be opened
+    FirebaseMessaging.onMessage.listen(
+      (message) {
+        print("FirebaseMessaging.onMessage.listen");
+        if (message.notification != null) {
+          print(message.notification!.title);
+          print(message.notification!.body);
+          print("message.data11 ${message.data}");
+          LocalNotificationService.createanddisplaynotification(message);
+        }
+      },
+    );
+
+    // 3. This method only call when App in background and not terminated(not closed)
+    FirebaseMessaging.onMessageOpenedApp.listen(
+      (message) {
+        print("FirebaseMessaging.onMessageOpenedApp.listen");
+        if (message.notification != null) {
+          print(message.notification!.title);
+          print(message.notification!.body);
+          print("message.data22 ${message.data['_id']}");
+        }
+      },
+    );
+
     super.initState();
   }
 
@@ -86,7 +132,8 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             ]),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
               child: BottomNavigationBar(
                 // selectedItemColor: Colors.red,
                 backgroundColor: Colors.white,
@@ -106,15 +153,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   BottomNavigationBarItem(
                     icon: _bnScreens[1].icon,
-                    label: "Lesson",
+                    label: AppLocalizations.of(context)!.lesson,
                   ),
                   BottomNavigationBarItem(
                     icon: _bnScreens[2].icon,
                     activeIcon: Image.asset(
                       Assets.logoBottomNavBarActiveIcon,
                     ),
-                    label: "Task",
+                    label: AppLocalizations.of(context)!.task,
                   ),
+                  // BottomNavigationBarItem(
+                  //     icon: _bnScreens[3].icon, label: "Notification"),
                   BottomNavigationBarItem(
                     icon: _bnScreens[3].icon,
                     label: AppLocalizations.of(context)!.profile,

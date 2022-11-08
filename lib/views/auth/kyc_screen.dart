@@ -14,7 +14,7 @@ import 'package:subrate/core/res/network.dart';
 import 'package:subrate/core/utils/helpers.dart';
 import 'package:http/http.dart' as http;
 import 'package:subrate/models/authorization_header.dart';
-import '../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../core/res/assets.dart';
 import '../../core/res/mission_distributor_colors.dart';
 import '../../core/res/routes.dart';
@@ -40,7 +40,7 @@ class _KycScreenState extends State<KycScreen> with Helpers {
   late TextEditingController email;
   late TextEditingController phone;
   late TextEditingController DBirth;
-  final List<String> item = ["License", "Passport", "National"];
+  final List<String> item = ["License", "Passport", "National ID"];
   String? selectedValue;
   String? ImageUrl;
   @override
@@ -85,6 +85,7 @@ class _KycScreenState extends State<KycScreen> with Helpers {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     AppLocalizations? localizations = AppLocalizations.of(context);
+    print("Value of image is here$ImageUrl");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -183,13 +184,14 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                               builder: (context) =>
                                                   SimpleDialog(
                                                 title: Text(
-                                                    localizations.selectImage),
+                                                  localizations.selectImage,
+                                                ),
                                                 children: [
                                                   SimpleDialogOption(
                                                       child: ListTile(
                                                         title: Text(
-                                                            localizations
-                                                                .camera),
+                                                          localizations.camera,
+                                                        ),
                                                         leading: Icon(
                                                           Icons.camera_alt,
                                                         ),
@@ -214,8 +216,8 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                                   SimpleDialogOption(
                                                       child: ListTile(
                                                         title: Text(
-                                                            localizations
-                                                                .gallery),
+                                                          localizations.gallery,
+                                                        ),
                                                         leading: Icon(
                                                           Icons.image,
                                                         ),
@@ -331,8 +333,9 @@ class _KycScreenState extends State<KycScreen> with Helpers {
 
                                                     // Close the modal
                                                     CupertinoButton(
-                                                      child: Text(
-                                                          localizations.ok),
+                                                      child: Text("Ok"
+                                                          // localizations.ok,
+                                                          ),
                                                       onPressed: () =>
                                                           Navigator.of(context)
                                                               .pop(),
@@ -363,7 +366,8 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                         showSnackBar(
                                             context: context,
                                             message:
-                                                localizations.date_not_selected,
+                                                // localizations.date_not_selected,
+                                                "Date is not selected",
                                             error: true);
                                       }
                                     },
@@ -375,7 +379,9 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                 margin: EdgeInsets.symmetric(horizontal: 3),
                                 child: Text(
                                   DBirth.text.isEmpty
-                                      ? localizations.date_not_selected
+                                      ?
+                                      // localizations.date_not_selected
+                                      "Date is not selected"
                                       : DBirth.text.toString(),
                                   style: const TextStyle(
                                     fontSize: 16,
@@ -396,11 +402,15 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                             context: context,
                             barrierDismissible: true,
                             builder: (context) => SimpleDialog(
-                              title: Text(localizations.selectImage),
+                              title: Text(
+                                  // localizations.selectImage
+                                  "Select am image"),
                               children: [
                                 SimpleDialogOption(
                                     child: ListTile(
-                                      title: Text(localizations.camera),
+                                      title: Text(
+                                          // localizations.camera
+                                          "Camera"),
                                       leading: Icon(
                                         Icons.camera_alt,
                                       ),
@@ -418,7 +428,9 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                                     }),
                                 SimpleDialogOption(
                                     child: ListTile(
-                                      title: Text(localizations.gallery),
+                                      title: Text(
+                                          // localizations.gallery
+                                          "Gallery"),
                                       leading: Icon(
                                         Icons.image,
                                       ),
@@ -446,8 +458,12 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                           margin: EdgeInsets.symmetric(horizontal: 3),
                           child: Text(
                             identityImage == null
-                                ? localizations.uploadid
-                                : localizations.select,
+                                ?
+                                // localizations.uploadid
+                                "Upload"
+                                :
+                                // localizations.select,
+                                "Selected",
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
@@ -469,7 +485,8 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton2(
                             hint: Text(
-                              localizations.idtype,
+                              // localizations.idtype,
+                              "Id type",
                               style: TextStyle(
                                 fontSize: 16,
                                 //     color: Colors.grey,
@@ -509,14 +526,18 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                             if (identityImage == null) {
                               showSnackBar(
                                   context: context,
-                                  message: localizations.selectImage,
+                                  message:
+                                      // localizations.selectImage,
+                                      "Select an Image",
                                   error: true);
                               return;
                             } else if (selectedValue == null) {
                               {
                                 showSnackBar(
                                     context: context,
-                                    message: localizations.idtype,
+                                    message:
+                                        // localizations.idtype,
+                                        "Id type",
                                     error: true);
                                 return;
                               }
@@ -524,7 +545,9 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                               {
                                 showSnackBar(
                                     context: context,
-                                    message: localizations.date_not_selected,
+                                    message:
+                                        // localizations.date_not_selected,
+                                        "Date is not selected",
                                     error: true);
                                 return;
                               }
@@ -541,7 +564,8 @@ class _KycScreenState extends State<KycScreen> with Helpers {
                           }
                         },
                         child: Text(
-                          localizations.kyc_valid,
+                          // localizations.kyc_valid,
+                          "Kyc valid",
                           style: TextStyle(
                             fontSize: 15,
                           ),

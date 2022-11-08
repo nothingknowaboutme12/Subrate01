@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:subrate/controllers/getX/app_getX_controller.dart';
 
-import '../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../controllers/getX/language_change_notifier_getX.dart';
 import '../../controllers/getX/mission_getX_controller.dart';
 import '../../controllers/storage/local/prefs/user_preference_controller.dart';
@@ -109,7 +109,11 @@ class _ProfileScreenState extends State<ProfileScreen> with Helpers {
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
-        connection;
+        if (mounted) {
+          setState(() {
+            connection;
+          });
+        }
       },
     );
     return Scaffold(
@@ -572,7 +576,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Helpers {
                             builder: (context) => KycScreen(isSignUP: false),
                           ));
                     },
-                    child: Text("KYC Validation"),
+                    child: Text(AppLocalizations.of(context)!.kyc_valid),
                   ),
                   SizedBox(height: 10),
                   Container(

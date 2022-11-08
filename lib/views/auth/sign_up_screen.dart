@@ -1,12 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import '../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:subrate/models/notification/notification.dart';
 import '../../controllers/storage/network/api/controllers/auth_api_controller.dart';
 import '../../core/res/mission_distributor_colors.dart';
 import '../../core/res/routes.dart';
@@ -30,14 +34,16 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
   late TextEditingController _passwordTextController;
   late TextEditingController _confirmPasswordTextController;
   late TextEditingController _mobile;
-
+  late TextEditingController _birthDateTextEditingController;
   String? _usernameError;
   String? _mobilerror;
-  String? _dateerror;
+  String? _birthDateError;
   String? _emailError;
   String? _passwordError;
   String? _confirmPasswordError;
   List<DropdownMenuItem> citiesItem = [];
+  bool checked = false;
+  double editTextSize = 803.6363636363636 / 12.36;
 
   @override
   void initState() {
@@ -46,6 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
     _emailTextController = TextEditingController();
     _passwordTextController = TextEditingController();
     _confirmPasswordTextController = TextEditingController();
+    _birthDateTextEditingController = TextEditingController();
     _mobile = TextEditingController();
   }
 
@@ -56,18 +63,17 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
     _passwordTextController.dispose();
     _confirmPasswordTextController.dispose();
     _mobile.dispose();
+    _birthDateTextEditingController.dispose();
     super.dispose();
   }
 
-  File? image;
+  File? Image;
   double? _progressValue = 0;
   double buttonSize = 803.6363636363636 / 16;
   double bottomSizeBox = 803.6363636363636 / 3.4197;
   bool _isObscure = true;
   bool _isObscureConfirm = true;
-  bool _isObscureOld = true;
 
-  String? selectedDate;
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
@@ -107,10 +113,6 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
             alignment: Alignment.topCenter,
             child: ListView(
               children: [
-                // LinearProgressIndicator(
-                //   value: _progressValue,
-                //   backgroundColor: Colors.transparent,
-                // ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -124,12 +126,12 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                         fit: StackFit.expand,
                         children: [
                           CircleAvatar(
-                            backgroundImage: image == null
+                            backgroundImage: Image == null
                                 ? null
                                 : FileImage(
-                                    image as File,
+                                    Image as File,
                                   ),
-                            child: image == null
+                            child: Image == null
                                 ? Icon(
                                     Icons.person,
                                     color: Colors.grey.shade700,
@@ -159,12 +161,15 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                                         builder: (context) {
                                           return SimpleDialog(
                                             title: Text(
-                                                localizations!.selectImage),
+                                              localizations!.selectImage,
+                                            ),
                                             children: [
                                               SimpleDialogOption(
                                                   child: ListTile(
                                                     title: Text(
-                                                        localizations.camera),
+                                                        localizations.camera
+                                                        // "Camera",
+                                                        ),
                                                     leading: Icon(
                                                       Icons.camera_alt,
                                                     ),
@@ -180,7 +185,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                                                                 .camera);
                                                     if (picked != null) {
                                                       setState(() {
-                                                        image =
+                                                        Image =
                                                             File(picked.path);
                                                       });
                                                     }
@@ -203,7 +208,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                                                                 .gallery);
                                                     if (picked != null) {
                                                       setState(() {
-                                                        image =
+                                                        Image =
                                                             File(picked.path);
                                                       });
                                                     }
@@ -343,90 +348,31 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                       ),
                     ),
                     SizedBox(height: height / 42.29),
-                    GestureDetector(
-                      onTap: Platform.isIOS
-                          ? () async {
-                              // Cuper
-
-                              showCupertinoModalPopup(
-                                  context: context,
-                                  builder: (_) => Container(
-                                        height: 500,
-                                        color: const Color.fromARGB(
-                                            255, 255, 255, 255),
-                                        child: Column(
-                                          children: [
-                                            SizedBox(
-                                              height: 400,
-                                              child: CupertinoDatePicker(
-                                                  initialDateTime:
-                                                      DateTime.now(),
-                                                  onDateTimeChanged: (val) {
-                                                    setState(() {
-                                                      selectedDate =
-                                                          val.toString();
-                                                    });
-                                                  }),
-                                            ),
-
-                                            // Close the modal
-                                            CupertinoButton(
-                                              child: Text(localizations.ok),
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                            )
-                                          ],
-                                        ),
-                                      ));
-                            }
-                          : () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(
-                                    2000), //DateTime.now() - not to allow to choose before today.
-                                lastDate: DateTime(2101),
-                              );
-
-                              if (pickedDate != null) {
-                                print(
-                                    pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                                String formattedDate =
-                                    DateFormat('yyyy-MM-dd').format(pickedDate);
-                                print(
-                                    formattedDate); //formatted date output using intl package =>  2021-03-16
-                                //you can implement different kind of Date Format here according to your requirement
-
-                                setState(() {
-                                  selectedDate = formattedDate
-                                      .toString(); //set output date to TextField value.
-                                });
-                              } else {
-                                showSnackBar(
-                                    context: context,
-                                    message: localizations.date_not_selected,
-                                    error: true);
-                              }
-                            },
-                      child: Container(
-                        height: height * 0.07,
-                        width: double.infinity,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 13, vertical: 13),
-                        margin: EdgeInsets.symmetric(horizontal: 3),
-                        child: Text(
-                          selectedDate == null
-                              ? localizations.date_not_selected
-                              : selectedDate.toString(),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey.shade600,
+                    Container(
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(horizontal: 8),
+                      height: editTextSize,
+                      child: TextField(
+                        controller: _birthDateTextEditingController,
+                        decoration: InputDecoration(
+                          label: Text(AppLocalizations.of(context)!.birthDate),
+                          errorText: _birthDateError,
+                          errorBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                              color: MissionDistributorColors.secondaryColor,
+                              width: 2,
+                            ),
                           ),
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: MissionDistributorColors.textFieldColor,
+                          suffixIcon: IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: MissionDistributorColors.primaryColor,
+                              size: 20,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -535,19 +481,95 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
                         ),
                       ),
                     ),
+                    SizedBox(height: height / 42.29),
+                    FittedBox(
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: checked,
+                            onChanged: (value) {
+                              setState(() {
+                                checked = value as bool;
+                              });
+                            },
+                          ),
+                          Text(
+                            localizations.agree_and_term,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade800,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 3),
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text(
+                                    localizations.term_and_condition,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                        fontStyle: FontStyle.italic),
+                                  ),
+                                  content: Text(
+                                    "There we will show all the term and conditions",
+                                    style:
+                                        TextStyle(fontStyle: FontStyle.italic),
+                                  ),
+                                  actions: [
+                                    MyElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      height: buttonSize,
+                                      width: width,
+                                      borderRadiusGeometry:
+                                          BorderRadius.circular(15),
+                                      marginHorizontal: width / 8.72,
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          MissionDistributorColors.primaryColor,
+                                          MissionDistributorColors.primaryColor
+                                        ],
+                                      ),
+                                      child: Text(
+                                        "X",
+                                        style: const TextStyle(
+                                            fontSize: 25, color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "Terms and conditions",
+                              style: TextStyle(
+                                fontSize: 13,
+                                decoration: TextDecoration.underline,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                                color: MissionDistributorColors.primaryColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     SizedBox(height: height / 17.85),
                     MyElevatedButton(
-                      onPressed: () async {
-                        if (image == null) {
-                          showSnackBar(
-                            context: context,
-                            message: localizations.selectImage,
-                            error: true,
-                          );
-                          return;
-                        }
-                        image == null ? Text('') : await performSignUp();
-                      },
+                      onPressed: checked
+                          ? () async {
+                              await performSignUp();
+                            }
+                          : null,
                       height: buttonSize,
                       width: width,
                       borderRadiusGeometry: BorderRadius.circular(15),
@@ -593,29 +615,9 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
   }
 
   Future<void> performSignUp() async {
-    if (checkData()) {
+    if (checkFieldError()) {
       await signUp();
     }
-  }
-
-  bool checkData() {
-    if (checkFieldError()) {
-      if (selectedDate == null) {
-        showSnackBar(
-            context: context,
-            message: AppLocalizations.of(context)!.enter_birthdate,
-            error: true,
-            time: 1);
-        return false;
-      }
-      return true;
-    } else
-      showSnackBar(
-          context: context,
-          message: AppLocalizations.of(context)!.enter_required_data,
-          error: true,
-          time: 1);
-    return false;
   }
 
   bool checkFieldError() {
@@ -624,7 +626,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
     bool phone = checkphone();
     bool password = checkPassword();
     bool confirmPassword = checkConfirmPassword();
-
+    bool checkDateBirth = checkBirthDate();
     setState(() {
       _usernameError =
           !username ? AppLocalizations.of(context)!.enter_username : null;
@@ -636,8 +638,16 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
           : null;
       _mobilerror =
           !phone ? AppLocalizations.of(context)!.enter_phone_number : null;
+      _birthDateError = !checkDateBirth
+          ? AppLocalizations.of(context)!.enter_birthdate
+          : null;
     });
-    if (username && email && password && confirmPassword && phone) {
+    if (username &&
+        email &&
+        password &&
+        confirmPassword &&
+        phone &&
+        checkDateBirth) {
       return true;
     } else {
       return false;
@@ -646,6 +656,13 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
 
   bool checkUsername() {
     if (_usernameTextController.text.isNotEmpty) {
+      return true;
+    }
+    return false;
+  }
+
+  bool checkBirthDate() {
+    if (_birthDateTextEditingController.text.isNotEmpty) {
       return true;
     }
     return false;
@@ -721,6 +738,7 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
   }
 
   Future<void> signUp() async {
+    print("Value of image is ${Image}");
     showDialog(
         context: context,
         builder: (context) => Center(
@@ -732,8 +750,8 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
         name: _usernameTextController.text,
         email: _emailTextController.text,
         password: _passwordTextController.text,
-        image: base64Encode(image!.readAsBytesSync()),
-        date: selectedDate.toString(),
+        image: Image == null ? "" : base64Encode(Image!.readAsBytesSync()),
+        date: _birthDateTextEditingController.text,
         phone: _mobile.text,
         context: context);
     if (status) {
@@ -753,6 +771,8 @@ class _SignUpScreenState extends State<SignUpScreen> with Helpers {
       password: _passwordTextController.text.trim(),
     );
     if (status) {
+      final token = await FirebaseMessaging.instance.getToken();
+      NotificationApi.fcmtokenUpdate(token.toString());
       showSnackBar(
           context: context,
           message: AppLocalizations.of(context)!.sign_up_successfully);

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:subrate/controllers/getX/mission_getX_controller.dart';
 import 'package:subrate/controllers/getX/payment_gateway_getX_controller.dart';
 import 'package:subrate/controllers/storage/local/prefs/user_preference_controller.dart';
 import 'package:subrate/controllers/storage/network/api/api_settings.dart';
@@ -36,6 +37,7 @@ class _PaymentScreenState extends State<PaymentScreen> with Helpers {
     super.initState();
   }
 
+  double? _progressValue = 0;
   @override
   void dispose() {
     accountNumber.dispose();
@@ -46,6 +48,7 @@ class _PaymentScreenState extends State<PaymentScreen> with Helpers {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    print(amount.text);
     return Scaffold(
       backgroundColor: MissionDistributorColors.scaffoldBackground,
       appBar: AppBar(
@@ -75,114 +78,143 @@ class _PaymentScreenState extends State<PaymentScreen> with Helpers {
           },
         ),
       ),
-      body: Container(
-        margin: EdgeInsets.all(5),
-        child: Form(
-          key: _formkey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Row(
-                  children: [
-                    Spacer(),
-                    Text(
-                      "Setup your ",
-                      style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: MissionDistributorColors.primaryColor,
-                      ),
-                    ),
-                    SizedBox(
-                      width: size.width / 5,
-                      height: size.height / 15,
-                      child: _paymentGatWayGetXController
-                              .paymentGatWays[widget.index].image!.isNotEmpty
-                          ? Image.network(
-                              NetworkLink(
-                                      link: _paymentGatWayGetXController
-                                              .paymentGatWays[widget.index]
-                                              .image ??
-                                          '')
-                                  .link,
-                              fit: BoxFit.fill,
-                            )
-                          : Image.asset(Assets.payTmWalletImage),
-                    ),
-                    Spacer(),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: size.height * 0.02,
-              ),
-              customtextfield(
-                title: "Enter amount",
-                valid: (value) {
-                  if (value!.isEmpty) {
-                    return "Enter amount for withdraw";
-                  }
-                },
-              ),
-              SizedBox(
-                height: size.height * 0.02,
-              ),
-              customtextfield(
-                title: "Enter account number",
-                controller: accountNumber,
-                valid: (value) {
-                  if (value!.isEmpty) {
-                    return "Enter account number";
-                  }
-                },
-              ),
-              SizedBox(
-                height: size.height * 0.03,
-              ),
-              MyElevatedButton(
-                  // height: buttonHeight / 1.4,
-                  // width: width / 3,
-                  borderRadiusGeometry: BorderRadius.circular(10),
-                  gradient: const LinearGradient(
-                    colors: [
-                      MissionDistributorColors.primaryColor,
-                      MissionDistributorColors.primaryColor,
-                    ],
-                  ),
-                  onPressed: () {
-                    performTransection();
-                  },
-                  child: Text("Submit"))
-            ],
+      body: Column(
+        children: [
+          LinearProgressIndicator(
+            value: _progressValue,
+            backgroundColor: Colors.transparent,
           ),
-        ),
+          Spacer(),
+          Container(
+            margin: EdgeInsets.all(7),
+            child: Form(
+              key: _formkey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text(
+                          "Setup your ",
+                          style: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: MissionDistributorColors.primaryColor,
+                          ),
+                        ),
+                        SizedBox(
+                          width: size.width / 5,
+                          height: size.height / 15,
+                          child: _paymentGatWayGetXController
+                                  .paymentGatWays[widget.index]
+                                  .image!
+                                  .isNotEmpty
+                              ? Image.network(
+                                  NetworkLink(
+                                    link: _paymentGatWayGetXController
+                                            .paymentGatWays[widget.index]
+                                            .image ??
+                                        '',
+                                  ).link,
+                                  fit: BoxFit.fill,
+                                )
+                              : Image.asset(Assets.payTmWalletImage),
+                        ),
+                        Spacer(),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: size.height * 0.02,
+                  ),
+                  customtextfield(
+                    title: "Enter amount",
+                    controller: amount,
+                    valid: (value) {
+                      if (value!.isEmpty) {
+                        return "Enter amount for withdraw";
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: size.height * 0.02,
+                  ),
+                  customtextfield(
+                    title: "Enter account number",
+                    controller: accountNumber,
+                    valid: (value) {
+                      if (value!.isEmpty) {
+                        return "Enter account number";
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: size.height * 0.03,
+                  ),
+                  MyElevatedButton(
+                      // height: buttonHeight / 1.4,
+                      // width: width / 3,
+                      borderRadiusGeometry: BorderRadius.circular(10),
+                      gradient: const LinearGradient(
+                        colors: [
+                          MissionDistributorColors.primaryColor,
+                          MissionDistributorColors.primaryColor,
+                        ],
+                      ),
+                      onPressed: () async {
+                        String tootal = MissionGetXController.to.money.value;
+                        double totalAmount = double.parse(tootal);
+                        double enterAmount = double.parse(amount.text);
+                        if (enterAmount <= totalAmount) {
+                          await performTransection();
+                        } else if (enterAmount > totalAmount) {
+                          showSnackBar(
+                              context: context,
+                              message: "You have sufficiant balance",
+                              error: true);
+                          return;
+                        }
+                      },
+                      child: Text("Submit"))
+                ],
+              ),
+            ),
+          ),
+          Spacer(),
+        ],
       ),
     );
+  }
+
+  void _changeProgressValue({required double? value}) {
+    if (mounted)
+      setState(() {
+        _progressValue = value;
+      });
   }
 
   performTransection() async {
     String token = UserPreferenceController().token;
 
     if (_formkey.currentState!.validate()) {
+      _changeProgressValue(value: null);
       showDialog(
         context: context,
-        builder: (context) => Container(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
+        builder: (context) => Container(),
       );
       var response = await http.post(Uri.parse(ApiSettings.sendpay), body: {
-        "payment_gateway_id":
-            _paymentGatWayGetXController.paymentGatWays[widget.index].id,
-        "amount": amount.value,
-        "data": accountNumber.value,
+        "payment_gateway_id": _paymentGatWayGetXController
+            .paymentGatWays[widget.index].id
+            .toString(),
+        "amount": amount.text,
+        "data": accountNumber.text,
       }, headers: {
         HttpHeaders.authorizationHeader:
             AuthorizationHeader(token: token).token,
@@ -190,7 +222,9 @@ class _PaymentScreenState extends State<PaymentScreen> with Helpers {
       print(response.statusCode);
       if (response.statusCode == 200 || response.statusCode == 201) {
         showSnackBar(context: context, message: "Data is submit sucessfully");
+        Navigator.pop(context);
       }
+      _changeProgressValue(value: 0);
       Navigator.pop(context);
       showSnackBar(context: context, message: response.statusCode.toString());
     }

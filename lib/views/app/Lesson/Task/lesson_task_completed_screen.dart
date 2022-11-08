@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:subrate/app_localizations.dart';
 import 'package:subrate/controllers/getX/do_mission_getX_controller.dart';
 import 'package:subrate/controllers/getX/mission_getX_controller.dart';
 import 'package:subrate/core/res/assets.dart';
@@ -10,20 +9,16 @@ import 'package:subrate/core/widgets/MyElevatedButton.dart';
 import 'package:subrate/models/Task/task.dart';
 import 'package:subrate/models/network_link.dart';
 import 'package:subrate/models/url_link.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class LessonTaskCompletedScreen extends StatefulWidget {
   Task mission;
-  String imageUrl;
   String money;
 
   LessonTaskCompletedScreen(
-      {required this.money,
-      required this.mission,
-      required this.imageUrl,
-      Key? key})
+      {required this.money, required this.mission, Key? key})
       : super(key: key);
 
   @override
@@ -93,7 +88,7 @@ class _LessonTaskCompletedScreenState extends State<LessonTaskCompletedScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Compleled",
+          AppLocalizations.of(context)!.done,
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -142,14 +137,14 @@ class _LessonTaskCompletedScreenState extends State<LessonTaskCompletedScreen> {
                           height: height / 4.5,
                           width: double.infinity,
                           child: widget.mission.images.isNotEmpty
-                              ? widget.mission.images.contains('http')
+                              ? widget.mission.images[0].name.contains('http')
                                   ? Image.asset(
                                       Assets.missionImage,
                                       fit: BoxFit.fill,
                                     )
                                   : Image.network(
                                       NetworkLink(
-                                        link: widget.imageUrl,
+                                        link: widget.mission.images[0].name,
                                       ).link,
                                       fit: BoxFit.fill,
                                     )
@@ -404,11 +399,13 @@ class _LessonTaskCompletedScreenState extends State<LessonTaskCompletedScreen> {
                       onPressed: () async {
                         Navigator.pushNamed(context, Routes.walletScreenScreen);
                       },
-                      child: Text(
-                        AppLocalizations.of(context)!.go_wallet,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w300,
+                      child: FittedBox(
+                        child: Text(
+                          AppLocalizations.of(context)!.go_wallet,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                          ),
                         ),
                       ),
                       height: buttonHeight,
@@ -421,8 +418,10 @@ class _LessonTaskCompletedScreenState extends State<LessonTaskCompletedScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 40),
                   ],
+                ),
+                SizedBox(
+                  height: 10,
                 ),
               ],
             ),

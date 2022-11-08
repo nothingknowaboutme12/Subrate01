@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:subrate/controllers/storage/local/prefs/user_preference_controller.dart';
+import 'package:subrate/controllers/storage/network/api/api_settings.dart';
 import 'package:subrate/core/utils/helpers.dart';
+import 'package:subrate/models/authorization_header.dart';
 import 'package:subrate/views/auth/kyc_screen.dart';
-
-import '../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../controllers/getX/mission_getX_controller.dart';
 import '../../../controllers/getX/payment_gateway_getX_controller.dart';
 import '../../../core/res/assets.dart';
@@ -13,6 +18,7 @@ import '../../../core/res/routes.dart';
 import '../../../core/widgets/MyElevatedButton.dart';
 import '../../../models/network_link.dart';
 import 'payment_screen.dart';
+import 'package:http/http.dart' as http;
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({Key? key}) : super(key: key);
@@ -25,7 +31,7 @@ class _WalletScreenState extends State<WalletScreen> with Helpers {
   late double width;
   late double height;
   double buttonHeight = 803 / 20;
-  bool kyccheck = false;
+  String? kyccheck;
 
   final Uri _url = Uri.parse('https://flutter.dev');
   bool isGoButtonVisible = true;
@@ -34,14 +40,28 @@ class _WalletScreenState extends State<WalletScreen> with Helpers {
     color: MissionDistributorColors.primaryColor,
     fontSize: 15,
   );
-  checking() async {
-    final prefs = await SharedPreferences.getInstance();
-    kyccheck = prefs.getBool('isDone') as bool;
+
+  kycchecking() async {
+    String token = UserPreferenceController().token;
+    var response = await http.post(Uri.parse(ApiSettings.kyccheck), headers: {
+      HttpHeaders.authorizationHeader: AuthorizationHeader(token: token).token,
+    });
+    final decode = await jsonDecode(response.body);
+    kyccheck = await decode['data']['profile_verified'];
+    if (kyccheck == 'verified') {
+      if (mounted)
+        setState(() {
+          isLoading = false;
+        });
+    }
   }
 
+  bool isLoading = true;
   @override
   void initState() {
-    checking();
+    kycchecking();
+
+    Future.delayed(Duration(seconds: 5));
 
     super.initState();
   }
@@ -54,6 +74,8 @@ class _WalletScreenState extends State<WalletScreen> with Helpers {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
+    print("kyc chceck $kyccheck");
+    print("Loading value is$isLoading");
     return Scaffold(
       backgroundColor: MissionDistributorColors.scaffoldBackground,
       appBar: AppBar(
@@ -374,7 +396,7 @@ class _WalletScreenState extends State<WalletScreen> with Helpers {
                               Container(
                                   margin: EdgeInsets.symmetric(
                                       horizontal: width / 4),
-                                  child: kyccheck
+                                  child: kyccheck == 'verified'
                                       ? MyElevatedButton(
                                           onPressed: () async {
                                             selectedPayouts >= 0
@@ -414,17 +436,51 @@ class _WalletScreenState extends State<WalletScreen> with Helpers {
                                           ),
                                         )
                                       : MyElevatedButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => KycScreen(
-                                                    isSignUP: false,
-                                                    wallet: true),
-                                              ),
-                                            );
-                                          },
-                                          child: Text("Valide first"),
+                                          height: height * 0.05,
+                                          width: width * 0.05,
+                                          borderRadiusGeometry:
+                                              BorderRadius.circular(10),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              MissionDistributorColors
+                                                  .primaryColor,
+                                              MissionDistributorColors
+                                                  .primaryColor,
+                                            ],
+                                          ),
+                                          onPressed: isLoading
+                                              ? null
+                                              : () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          KycScreen(
+                                                        isSignUP: false,
+                                                        wallet: true,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                          child: isLoading
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                )
+                                              : Text(
+                                                  "Valide first",
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    // color: Colors.red,
+                                                    fontWeight: FontWeight.w300,
+                                                  ),
+                                                ),
                                         )),
                             ],
                           ),

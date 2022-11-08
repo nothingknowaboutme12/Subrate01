@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-import '../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:subrate/models/notification/notification.dart';
 import '../../controllers/storage/network/api/controllers/auth_api_controller.dart';
 import '../../core/res/assets.dart';
 import '../../core/res/mission_distributor_colors.dart';
@@ -122,23 +124,41 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                                 );
                                 bool status = await SocialAuth.GoogleSignin();
                                 if (status) {
+                                  // final token = await FirebaseMessaging.instance
+                                  //     .getToken();
+                                  // NotificationApi.fcmtokenUpdate(
+                                  //     token.toString());
                                   showSnackBar(
                                       context: context,
                                       message:
-                                          localizations!.login_successfully);
-                                  Navigator.pushNamedAndRemoveUntil(context,
-                                      Routes.homeScreen, (route) => false);
+                                          localizations.login_successfully);
+                                  await Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      Routes.homeScreen,
+                                      (route) => false);
+                                } else {
+                                  _changeProgressValue(value: 0);
+
+                                  showSnackBar(
+                                      context: context,
+                                      message: localizations.cancel,
+                                      error: true);
                                 }
-                                _changeProgressValue(value: 0);
-                                Navigator.pop(context);
                               } catch (e) {
+                                print("here is an error");
+                                print(e);
                                 _changeProgressValue(value: 0);
                                 Navigator.pop(context);
-                                print(e.toString());
                                 showSnackBar(
-                                  context: context,
-                                  message: localizations!.cancel,
                                   error: true,
+                                  context: context,
+                                  message:
+                                      "Something went wrong please try again",
+                                );
+                                showSnackBar(
+                                  error: true,
+                                  context: context,
+                                  message: e.toString(),
                                 );
                               }
                             },
@@ -184,31 +204,33 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                                 );
                                 bool status = await SocialAuth.FacebookSignin();
                                 if (status) {
+                                  // final token = await FirebaseMessaging.instance
+                                  //     .getToken();
+                                  // NotificationApi.fcmtokenUpdate(
+                                  //     token.toString());
                                   showSnackBar(
                                       context: context,
                                       message:
                                           localizations.login_successfully);
-                                  // Navigator.pushNamedAndRemoveUntil(context,
-                                  //     Routes.homeScreen, (route) => false);
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      Routes.homeScreen, (route) => false);
                                   _changeProgressValue(value: 0);
-                                  Navigator.pop(context);
                                 } else {
                                   _changeProgressValue(value: 0);
-                                  Navigator.pop(context);
+                                  showSnackBar(
+                                      context: context,
+                                      message: localizations.cancel,
+                                      error: true);
                                 }
                               } catch (e) {
                                 _changeProgressValue(value: 0);
+                                print(e);
                                 Navigator.pop(context);
                                 showSnackBar(
                                   error: true,
                                   context: context,
                                   message:
                                       "Something went wrong please try again",
-                                );
-                                showSnackBar(
-                                  error: true,
-                                  context: context,
-                                  message: e.toString(),
                                 );
                               }
                             },
@@ -244,80 +266,73 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
                           SizedBox(
                             height: height / 50,
                           ),
-                          MyElevatedButton(
-                            onPressed: Platform.isIOS
-                                ? () async {
+                          Platform.isIOS
+                              ? MyElevatedButton(
+                                  onPressed: () async {
                                     print("Register with apple");
-                                  }
-                                : () {
-                                    showSnackBar(
-                                        context: context,
-                                        message: "Your are not apple user",
-                                        error: true);
-                                    return;
                                   },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/app_icons/apple.png",
-                                  fit: BoxFit.cover,
-                                  width: width / 8.925,
-                                  height: 100,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  localizations.register_with_apple,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        "assets/app_icons/apple.png",
+                                        fit: BoxFit.cover,
+                                        width: width / 8.925,
+                                        height: 100,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        // localizations.register_with_apple,
+                                        "Register with apple",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            height: buttonSize,
-                            borderRadiusGeometry: BorderRadius.circular(25),
-                            gradient: const LinearGradient(
-                              colors: [
-                                Colors.white,
-                                Colors.white,
-                              ],
-                            ),
-                          ),
+                                  height: buttonSize,
+                                  borderRadiusGeometry:
+                                      BorderRadius.circular(25),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Colors.white,
+                                      Colors.white,
+                                    ],
+                                  ),
+                                )
+                              : Text(''),
                         ],
                       ),
                       SizedBox(
                         height: height / 50,
                       ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: width / 6,
-                              child: const Divider(
-                                color: Colors.grey,
-                                thickness: 1,
-                              ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            width: width / 6,
+                            child: const Divider(
+                              color: Colors.grey,
+                              thickness: 1,
                             ),
-                            Text(
-                              localizations.register_by_email,
-                              style: const TextStyle(
-                                fontSize: 18,
-                              ),
+                          ),
+                          Text(
+                            " Or login with e-mail ",
+                            style: const TextStyle(
+                              fontSize: 18,
                             ),
-                            SizedBox(
-                              width: width / 6,
-                              child: const Divider(
-                                color: Colors.grey,
-                                thickness: 1,
-                              ),
+                          ),
+                          SizedBox(
+                            width: width / 6,
+                            child: const Divider(
+                              color: Colors.grey,
+                              thickness: 1,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: height / 17,
@@ -564,6 +579,8 @@ class _SignInScreenState extends State<SignInScreen> with Helpers {
     );
     _changeProgressValue(value: status ? 1 : 0);
     if (status) {
+      // final token = await FirebaseMessaging.instance.getToken();
+      // NotificationApi.fcmtokenUpdate(token.toString());
       Navigator.pushNamedAndRemoveUntil(
           context, Routes.homeScreen, (route) => false);
       showSnackBar(

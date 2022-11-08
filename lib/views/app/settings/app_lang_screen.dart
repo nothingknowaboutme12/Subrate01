@@ -1,7 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
-import '../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../controllers/getX/language_change_notifier_getX.dart';
 import '../../../core/res/mission_distributor_colors.dart';
 
@@ -118,6 +118,7 @@ class _AppLangScreenState extends State<AppLangScreen> {
                           if (value == 'English') {
                             LanguageChangeNotifierGetX.to
                                 .changeLanguage(languageCode: 'en');
+                            print("Selected language value is $value");
                           } else if (value == 'العربية') {
                             LanguageChangeNotifierGetX.to
                                 .changeLanguage(languageCode: 'ar');

@@ -14,7 +14,7 @@ import '../../../../core/res/assets.dart';
 import '../../../../core/res/routes.dart';
 import '../../../../core/utils/helpers.dart';
 import '../../../../core/widgets/MyElevatedButton.dart';
-import '../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../controllers/storage/network/api/controllers/auth_api_controller.dart';
 import '../../core/res/mission_distributor_colors.dart';
 import '../../models/auth/User.dart';
@@ -33,12 +33,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
   late TextEditingController _usernameTextController;
   late TextEditingController _emailTextController;
   late TextEditingController _phoneTextEditingController;
+  late TextEditingController _birthDateTextEditingController;
 
   String? _usernameError;
   String? _emailError;
   String? _phoneError;
   String? _birthDateError;
-  String? selectedDate;
   ImagePicker? imagePicker;
   XFile? _pickedFile;
 
@@ -62,7 +62,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
     _usernameTextController = TextEditingController();
     _emailTextController = TextEditingController();
     _phoneTextEditingController = TextEditingController();
-    // _birthDateTextEditingController = TextEditingController();
+    _birthDateTextEditingController = TextEditingController();
     _usernameTextController.text =
         UserPreferenceController().userInformation.name;
     _emailTextController.text =
@@ -71,7 +71,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
         UserPreferenceController().userInformation.mobile ?? '';
 
     _selectedGender = UserPreferenceController().userInformation.gender ?? '';
-    selectedDate = UserPreferenceController().userInformation.dob ?? '';
+    _birthDateTextEditingController.text = UserPreferenceController().userInformation.dob ?? '';
 
     imagePicker = ImagePicker();
     profileImage = UserPreferenceController().userInformation.avatar ?? '';
@@ -118,6 +118,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
     _usernameTextController.dispose();
     _emailTextController.dispose();
     _phoneTextEditingController.dispose();
+    _birthDateTextEditingController.dispose();
     super.dispose();
   }
 
@@ -297,86 +298,121 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
                   ),
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 20,
                 ),
-                GestureDetector(
-                  onTap: Platform.isIOS
-                      ? () async {
-                          // Cuper
+                // GestureDetector(
+                //   onTap: Platform.isIOS
+                //       ? () async {
+                //           // Cuper
+                //
+                //           showCupertinoModalPopup(
+                //               context: context,
+                //               builder: (_) => Container(
+                //                     height: 400,
+                //                     color: const Color.fromARGB(
+                //                         255, 255, 255, 255),
+                //                     child: Column(
+                //                       children: [
+                //                         SizedBox(
+                //                           height: 400,
+                //                           child: CupertinoDatePicker(
+                //                               initialDateTime: DateTime.now(),
+                //                               onDateTimeChanged: (val) {
+                //                                 setState(() {
+                //                                   selectedDate = val.toString();
+                //                                 });
+                //                               }),
+                //                         ),
+                //
+                //                         // Close the modal
+                //                         CupertinoButton(
+                //                           child: const Text('OK'),
+                //                           onPressed: () =>
+                //                               Navigator.of(context).pop(),
+                //                         )
+                //                       ],
+                //                     ),
+                //                   ));
+                //         }
+                //       : () async {
+                //           DateTime? pickedDate = await showDatePicker(
+                //             context: context,
+                //             initialDate: DateTime.now(),
+                //             firstDate: DateTime(
+                //                 2000), //DateTime.now() - not to allow to choose before today.
+                //             lastDate: DateTime(2101),
+                //           );
+                //
+                //           if (pickedDate != null) {
+                //             print(
+                //                 pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                //             String formattedDate =
+                //                 DateFormat('yyyy-MM-dd').format(pickedDate);
+                //             print(
+                //                 formattedDate); //formatted date output using intl package =>  2021-03-16
+                //             //you can implement different kind of Date Format here according to your requirement
+                //
+                //             setState(() {
+                //               selectedDate = formattedDate
+                //                   .toString(); //set output date to TextField value.
+                //             });
+                //           } else {
+                //             showSnackBar(
+                //                 context: context,
+                //                 message: AppLocalizations.of(context)!.cancel,
+                //                 error: true);
+                //           }
+                //         },
+                //   child: Container(
+                //     height: height * 0.07,
+                //     width: double.infinity,
+                //     padding: EdgeInsets.symmetric(horizontal: 13, vertical: 13),
+                //     // margin: EdgeInsets.symmetric(horizontal: 1),
+                //     child: Text(
+                //       selectedDate!.isEmpty
+                //           ? "Choose your date of birth"
+                //           : selectedDate.toString(),
+                //       style: const TextStyle(
+                //         fontSize: 16,
+                //         color: Colors.grey,
+                //       ),
+                //     ),
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(8),
+                //       // border: Border.fromBorderSide(BorderSide()),
+                //       color: MissionDistributorColors.textFieldColor,
+                //     ),
+                //   ),
+                // ),
 
-                          showCupertinoModalPopup(
-                              context: context,
-                              builder: (_) => Container(
-                                    height: 400,
-                                    color: const Color.fromARGB(
-                                        255, 255, 255, 255),
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          height: 400,
-                                          child: CupertinoDatePicker(
-                                              initialDateTime: DateTime.now(),
-                                              onDateTimeChanged: (val) {
-                                                setState(() {
-                                                  selectedDate = val.toString();
-                                                });
-                                              }),
-                                        ),
 
-                                        // Close the modal
-                                        CupertinoButton(
-                                          child: const Text('OK'),
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                        )
-                                      ],
-                                    ),
-                                  ));
-                        }
-                      : () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(
-                                2000), //DateTime.now() - not to allow to choose before today.
-                            lastDate: DateTime(2101),
-                          );
 
-                          if (pickedDate != null) {
-                            print(
-                                pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                            String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
-                            print(
-                                formattedDate); //formatted date output using intl package =>  2021-03-16
-                            //you can implement different kind of Date Format here according to your requirement
 
-                            setState(() {
-                              selectedDate = formattedDate
-                                  .toString(); //set output date to TextField value.
-                            });
-                          } else {
-                            print("Date is not selected");
-                          }
-                        },
-                  child: Container(
-                    height: height * 0.07,
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 13, vertical: 13),
-                    // margin: EdgeInsets.symmetric(horizontal: 1),
-                    child: Text(
-                      selectedDate == null
-                          ? "Choose your date of birth"
-                          : selectedDate.toString(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
+                Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  height: editTextSize,
+                  child: TextField(
+                    controller: _birthDateTextEditingController,
+                    decoration: InputDecoration(
+                      label: Text(AppLocalizations.of(context)!.birthDate),
+                      errorText: _birthDateError,
+                      errorBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(
+                          color: MissionDistributorColors.secondaryColor,
+                          width: 2,
+                        ),
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      // border: Border.fromBorderSide(BorderSide()),
-                      color: MissionDistributorColors.textFieldColor,
+                      suffixIcon: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: MissionDistributorColors.primaryColor,
+                          size: 20,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -500,16 +536,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
     bool username = checkUsername();
     bool phone = checkPhoneNumber();
     bool gender = checkGender();
-    bool birthDate = selectedDate != null;
+    bool checkDateBirth = checkBirthDate();
     setState(() {
       _usernameError =
           !username ? AppLocalizations.of(context)!.enter_username : null;
       _phoneError = !phone ? AppLocalizations.of(context)!.phone_number : null;
       // _addressError = !address ? AppLocalizations.of(context)!.enter_address : null;
-      _birthDateError =
-          !birthDate ? AppLocalizations.of(context)!.enter_birthdate : null;
+      _birthDateError = !checkDateBirth
+          ? AppLocalizations.of(context)!.enter_birthdate
+          : null;
     });
-    if (username && phone && gender && birthDate) {
+    if (username && phone && gender && checkDateBirth) {
       return true;
     } else {
       return false;
@@ -545,7 +582,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
   }
 
   bool checkBirthDate() {
-    if (selectedDate != null) {
+    if (_birthDateTextEditingController.text.isNotEmpty) {
       return true;
     }
     return false;
@@ -557,7 +594,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> with Helpers {
     user.mobile = _phoneTextEditingController.text;
     user.email = _emailTextController.text;
     user.gender = _selectedGender;
-    user.dob = selectedDate;
+    user.dob = _birthDateTextEditingController.text;
 
     if (_pickedFile != null) {
       user.avatar = _pickedFile!.path;
