@@ -8,16 +8,20 @@ class ApiSettings {
   static const logout = _authURL + 'logout';
   static const register = _authURL + 'register';
   static const lesson = _apiURL + 'lessons';
+  static const tasktolesson = _apiURL + 'task_to_lesson';
   static const lessonTaskC = _apiURL + 'lesson_tasks_completed';
   static const lessonTaskR = _apiURL + 'lesson_tasks';
   static const google = _authURL + 'google-login';
   static const facebook = _authURL + 'facebook-login';
   static const kyc = _apiURL + 'kyc-validation';
+  static const kyccheck = _apiURL + 'kyc-verify-check';
+  static const tokenupdate = _apiURL + 'kyc-verify-check';
 
   static const updateProfile = _authURL + 'update-profile';
   static const changePassword = _authURL + 'change-password';
 
   static const missionURL = _apiURL + 'missions';
+  static const notification = _apiURL + 'notification';
   static const remainingMissionURL = missionURL + '/remaining';
   static const completedMissionURL = missionURL + '/completed';
   static const getDoMissionURL = _apiURL + 'domissions';

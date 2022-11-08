@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../controllers/getX/do_mission_getX_controller.dart';
 import '../../../controllers/getX/mission_getX_controller.dart';
 import '../../../core/res/assets.dart';
@@ -408,11 +408,13 @@ class _MissionCompleteScreenState extends State<MissionCompleteScreen> {
                       onPressed: () async {
                         Navigator.pushNamed(context, Routes.walletScreenScreen);
                       },
-                      child: Text(
-                        AppLocalizations.of(context)!.go_wallet,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w300,
+                      child: FittedBox(
+                        child: Text(
+                          AppLocalizations.of(context)!.go_wallet,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                          ),
                         ),
                       ),
                       height: buttonHeight,

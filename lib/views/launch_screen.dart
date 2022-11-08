@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../controllers/getX/connection_getX_controller.dart';
 import '../controllers/storage/local/prefs/user_preference_controller.dart';
 import '../core/res/assets.dart';
@@ -81,11 +81,12 @@ class _LaunchScreenState extends State<LaunchScreen> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: height / 2.7),
+                // SizedBox(height: height / 2.7),/
                 Image.asset(
                   Assets.logo,
-                  filterQuality: FilterQuality.high,
+                  filterQuality: FilterQuality.low,
                   width: imageWidth,
                   height: imageHeight,
                 ),
@@ -94,13 +95,10 @@ class _LaunchScreenState extends State<LaunchScreen> {
                   style: const TextStyle(
                     fontSize: 32,
                     color: MissionDistributorColors.primaryColor,
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
-                SizedBox(height: height / 10),
-                Image.asset(
-                  Assets.launchScreenImage,
-                  filterQuality: FilterQuality.high,
-                ),
+                // SizedBox(height: height / 2),
               ],
             ),
           ),

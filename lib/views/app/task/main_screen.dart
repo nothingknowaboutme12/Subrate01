@@ -4,8 +4,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:subrate/models/Lesson/LessonTaskController.dart';
+import 'package:subrate/models/Lesson/lesson_api.dart';
+import 'package:subrate/views/app/Lesson/lesson_detail_screen.dart';
 
-import '../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../controllers/getX/app_getX_controller.dart';
 import '../../../controllers/getX/mission_getX_controller.dart';
 import '../../../controllers/storage/local/prefs/user_preference_controller.dart';
@@ -15,6 +18,7 @@ import '../../../core/res/routes.dart';
 import '../../../core/utils/helpers.dart';
 import '../../../core/widgets/MyElevatedButton.dart';
 
+import '../../../models/Lesson/lesson.dart';
 import '../../../models/Task/task.dart';
 import '../../../models/network_link.dart';
 import 'task_detail_screen.dart';
@@ -43,11 +47,6 @@ class _MainScreenState extends State<MainScreen> with Helpers {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   bool connection = false;
-  // doall() async {
-  //   await MissionGetXController.to.read();
-  //   await AppGetXController.to.readGifts();
-  //   await AppGetXController.to.readRank();
-  // }
 
   @override
   void initState() {
@@ -104,17 +103,16 @@ class _MainScreenState extends State<MainScreen> with Helpers {
 
   @override
   Widget build(BuildContext context) {
-    // MissionGetXController.to.read();
-
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
+    AppLocalizations localization = AppLocalizations.of(context)!;
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
-        // if (mounted)
-        //   setState(() {
-        connection;
-        // });
+        if (mounted)
+          setState(() {
+            connection;
+          });
       },
     );
     return Scaffold(
@@ -161,7 +159,7 @@ class _MainScreenState extends State<MainScreen> with Helpers {
             ),
             onPressed: () {
               AppGetXController.to
-                  .changeSelectedBottomBarScreen(selectedIndex: 2);
+                  .changeSelectedBottomBarScreen(selectedIndex: 3);
             },
           ),
           SizedBox(width: width / 70),
@@ -179,6 +177,7 @@ class _MainScreenState extends State<MainScreen> with Helpers {
           builder: (context, orientation) {
             if (orientation == Orientation.portrait) {
             } else {}
+
             return Obx(
               () => ListView(
                 children: [
@@ -193,7 +192,7 @@ class _MainScreenState extends State<MainScreen> with Helpers {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Subrate",
+                          AppLocalizations.of(context)!.app_name,
                           style: const TextStyle(
                             fontSize: 22,
                             color: Colors.black,
@@ -201,10 +200,10 @@ class _MainScreenState extends State<MainScreen> with Helpers {
                           ),
                         ),
                         Text(
-                          "Earn from home what you learn",
+                          localization.app_title,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey.shade400,
+                            color: Colors.grey.shade500,
                           ),
                         ),
                         SizedBox(height: height / 29),
@@ -511,7 +510,7 @@ class _MainScreenState extends State<MainScreen> with Helpers {
                         ),
                         SizedBox(height: height / 100),
                         Text(
-                          "Today Tasks",
+                          localization.today_task,
                           style: const TextStyle(
                             fontSize: 20,
                             color: Colors.black,
@@ -521,176 +520,206 @@ class _MainScreenState extends State<MainScreen> with Helpers {
                         SizedBox(height: height / 100),
                         SizedBox(
                           height: height / 2.12,
-                          child: GetX<MissionGetXController>(
-                            builder: (controller) {
-                              Future.delayed(
-                                const Duration(seconds: 5),
-                                () {
-                                  isProgress = true;
-                                  if (mounted) {
-                                    setState(() {
-                                      isProgress = true;
-                                    });
-                                  }
-                                },
-                              );
-                              List<Task> _controller =
-                                  controller.remainingMissions.value;
-                              if (_controller.isNotEmpty) {
-                                return ListView.builder(
-                                  itemCount: _controller.length,
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        if (!_selectedDoneMissions) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MissionDetailsScreen(
-                                                mission: _controller[index],
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsetsDirectional.only(
-                                          top: height / 70,
-                                        ),
-                                        height: height / 5.5,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: MissionDistributorColors
-                                              .primaryColor,
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    30,
-                                                  ),
-                                                ),
-                                                height: height / 4.9,
-                                                width: double.infinity,
-                                                child: _controller[index]
-                                                        .images
-                                                        .isNotEmpty
-                                                    ? _controller[index]
-                                                            .images[0]
-                                                            .name
-                                                            .contains('http')
-                                                        ? Image.asset(
-                                                            Assets.missionImage,
-                                                            fit: BoxFit.fill,
-                                                          )
-                                                        : Image.network(
-                                                            NetworkLink(
-                                                              link: _controller[
-                                                                      index]
-                                                                  .images[0]
-                                                                  .name,
-                                                            ).link,
-                                                            fit: BoxFit.fill,
-                                                          )
-                                                    : Image.asset(
-                                                        Assets.missionImage,
-                                                        fit: BoxFit.fill,
-                                                      ),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: double.infinity,
-                                              height: double.infinity,
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  begin: AlignmentDirectional
-                                                      .topCenter,
-                                                  end: AlignmentDirectional
-                                                      .bottomCenter,
-                                                  colors: [
-                                                    Colors.transparent,
-                                                    Colors.black
-                                                        .withOpacity(0.5),
-                                                  ],
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                            ),
-                                            Container(
-                                              alignment: AlignmentDirectional
-                                                  .bottomStart,
-                                              padding:
-                                                  EdgeInsetsDirectional.only(
-                                                start: width / 20,
-                                                end: width / 20,
-                                                top: height / 160,
-                                                bottom: height / 80,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(25),
-                                              ),
-                                              child: Text(
-                                                _controller[index].title ??
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .no_has_title,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 30),
+                            child: GetX<MissionGetXController>(
+                              builder: (controller) {
+                                Future.delayed(
+                                  const Duration(seconds: 5),
+                                  () {
+                                    isProgress = true;
+                                    if (mounted) {
+                                      setState(() {
+                                        isProgress = true;
+                                      });
+                                    }
                                   },
                                 );
-                              } else if (_connectionStatus.name == 'none') {
-                                return Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    Center(
-                                      child: Text(
-                                        'Not Have Connection, Please Check Your Internet Connection',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
+
+                                List<Task> _controller =
+                                    controller.remainingMissions.value;
+                                if (_controller.isNotEmpty) {
+                                  return ListView.builder(
+                                    itemCount: _controller.length,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          showSnackBar(
+                                              context: context,
+                                              time: 2,
+                                              message: localization.loading);
+                                          Lesson lsson =
+                                              await LessonApiController()
+                                                  .gettasklesson(
+                                                      _controller[index]
+                                                          .id
+                                                          .toString());
+                                          LessonApiController().printvalue();
+                                          if (!_selectedDoneMissions) {
+                                            Future.delayed(
+                                                Duration(seconds: 2));
+                                            () {
+                                              isProgress = true;
+                                              if (mounted) {
+                                                setState(() {
+                                                  isProgress = true;
+                                                });
+                                              }
+                                            };
+
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return LessonDetailScreen(
+                                                lessson: lsson,
+                                                id: _controller[index]
+                                                    .id
+                                                    .toString(),
+                                              );
+                                            }));
+                                          }
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsetsDirectional.only(
+                                            top: height / 70,
+                                            // bottom: 30,
+                                          ),
+                                          height: height / 5.5,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: MissionDistributorColors
+                                                .primaryColor,
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      30,
+                                                    ),
+                                                  ),
+                                                  height: height / 4.9,
+                                                  width: double.infinity,
+                                                  child: _controller[index]
+                                                          .images
+                                                          .isNotEmpty
+                                                      ? _controller[index]
+                                                              .images[0]
+                                                              .name
+                                                              .contains('http')
+                                                          ? Image.asset(
+                                                              Assets
+                                                                  .missionImage,
+                                                              fit: BoxFit.fill,
+                                                            )
+                                                          : Image.network(
+                                                              NetworkLink(
+                                                                link: _controller[
+                                                                        index]
+                                                                    .images[0]
+                                                                    .name,
+                                                              ).link,
+                                                              fit: BoxFit.fill,
+                                                            )
+                                                      : Image.asset(
+                                                          Assets.missionImage,
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    begin: AlignmentDirectional
+                                                        .topCenter,
+                                                    end: AlignmentDirectional
+                                                        .bottomCenter,
+                                                    colors: [
+                                                      Colors.transparent,
+                                                      Colors.black
+                                                          .withOpacity(0.5),
+                                                    ],
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                              Container(
+                                                alignment: AlignmentDirectional
+                                                    .bottomStart,
+                                                padding:
+                                                    EdgeInsetsDirectional.only(
+                                                  start: width / 20,
+                                                  end: width / 20,
+                                                  top: height / 160,
+                                                  bottom: height / 80,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                ),
+                                                child: Text(
+                                                  _controller[index].title ??
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .no_has_title,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                } else if (_connectionStatus.name == 'none') {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: const [
+                                      Center(
+                                        child: Text(
+                                          'Not Have Connection, Please Check Your Internet Connection',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
+                                    ],
+                                  );
+                                } else if (_controller.isEmpty) {
+                                  return Center(
+                                    child: Visibility(
+                                      visible: isProgress,
+                                      replacement:
+                                          const CircularProgressIndicator(),
+                                      child: const Center(
+                                        child: Text('Not has Any Mission'),
+                                      ),
                                     ),
-                                  ],
-                                );
-                              } else if (_controller.isEmpty) {
-                                return Center(
-                                  child: Visibility(
-                                    visible: isProgress,
-                                    replacement:
-                                        const CircularProgressIndicator(),
-                                    child: const Center(
-                                      child: Text('Not has Any Mission'),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return const Center(
-                                  child: Text('Not has Any Mission'),
-                                );
-                              }
-                            },
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: Text('Not has Any Mission'),
+                                  );
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ],

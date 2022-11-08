@@ -1,8 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:subrate/controllers/getX/mission_getX_controller.dart';
 
-import 'app_localizations.dart';
 import 'controllers/getX/language_change_notifier_getX.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -12,10 +13,21 @@ import 'core/material_app_routes.dart';
 import 'core/mission_distributor_localizations.dart';
 import 'core/mission_distributor_theme.dart';
 import 'core/res/routes.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'models/notification/notification_services.dart';
+
+Future<void> backgroundHandler(RemoteMessage message) async {
+  print(message.data.toString());
+  print(message.notification!.title);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await AppSettingsPrefs().initPreferences();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  LocalNotificationService.initialize();
   await UserPreferenceController().initSharedPreferences();
   Get.put(MissionGetXController());
   runApp(const MyApp());
@@ -35,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => GetMaterialApp(
+      () => MaterialApp(
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

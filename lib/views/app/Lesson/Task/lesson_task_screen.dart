@@ -8,7 +8,7 @@ import 'package:subrate/models/Lesson/LessonTaskController.dart';
 import 'package:subrate/views/app/Lesson/Task/lesson_task_completed_screen.dart';
 import 'package:subrate/views/app/task/main_screen.dart';
 
-import '../../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../controllers/getX/app_getX_controller.dart';
 import '../../../../controllers/getX/mission_getX_controller.dart';
 import '../../../../controllers/storage/local/prefs/user_preference_controller.dart';
@@ -83,9 +83,10 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    setState(() {
-      _connectionStatus = result;
-    });
+    if (mounted)
+      setState(() {
+        _connectionStatus = result;
+      });
   }
 
   testConnection() async {
@@ -115,6 +116,8 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
         }
       },
     );
+    print("I am in lesson task");
+    print(widget.id);
     return RefreshIndicator(
       color: MissionDistributorColors.primaryColor,
       backgroundColor: MissionDistributorColors.secondaryColor,
@@ -127,7 +130,7 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
           elevation: 0,
           backgroundColor: Colors.white,
           title: Text(
-            "Task",
+            AppLocalizations.of(context)!.task,
             style: const TextStyle(
               fontSize: 20,
               color: Colors.black,
@@ -165,7 +168,7 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
               ),
               onPressed: () {
                 AppGetXController.to
-                    .changeSelectedBottomBarScreen(selectedIndex: 2);
+                    .changeSelectedBottomBarScreen(selectedIndex: 3);
               },
             ),
             SizedBox(width: width / 70),
@@ -276,8 +279,8 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
                               },
                             );
                             List<Task> _controller = _selectedDoneMissions
-                                ? controller.completedLessonTask
-                                : controller.remaininglessonTask;
+                                ? controller.completedLessonTask.value
+                                : controller.remaininglessonTask.value;
                             if (_controller.isNotEmpty) {
                               return ListView.builder(
                                 itemCount: _controller.length,
@@ -304,9 +307,6 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
                                               builder: (context) =>
                                                   LessonTaskCompletedScreen(
                                                 mission: _controller[index],
-                                                imageUrl: _controller[index]
-                                                    .images[0]
-                                                    .name,
                                                 money: _missionGetXController
                                                     .money.value,
                                               ),
@@ -436,13 +436,13 @@ class _LessonTaskScreenState extends State<LessonTaskScreen> with Helpers {
                                   replacement:
                                       const CircularProgressIndicator(),
                                   child: const Center(
-                                    child: Text('Not has Any Mission'),
+                                    child: Text('Not has Any Task'),
                                   ),
                                 ),
                               );
                             } else {
                               return const Center(
-                                child: Text('Not has Any Mission'),
+                                child: Text('Not has Any Task'),
                               );
                             }
                           },

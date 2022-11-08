@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:get/get.dart';
 import 'package:subrate/controllers/storage/local/prefs/user_preference_controller.dart';
 import 'package:subrate/controllers/storage/network/api/api_settings.dart';
 import 'package:http/http.dart' as http;
@@ -10,12 +11,35 @@ import 'lesson.dart';
 
 class LessonApiController {
   String token = UserPreferenceController().token;
+  Lesson? emptylesson;
+  printvalue() {}
+
   Future<List<Lesson>> getlesson() async {
     var response = await responseApiGetLesson(ApiSettings.lesson);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return getjsonDataLesson(response.body);
     }
     return [];
+  }
+
+  Future<Lesson> gettasklesson(String id) async {
+    Lesson lesson;
+    var response = await http.post(Uri.parse(ApiSettings.tasktolesson), body: {
+      "mission_id": id,
+    }, headers: {
+      HttpHeaders.authorizationHeader: AuthorizationHeader(token: token).token,
+    });
+    print("here is lesson task");
+    print(response);
+    print(response.statusCode);
+    if (await response.statusCode == 200 || response.statusCode == 201) {
+      var dataJsonArray = await jsonDecode(response.body);
+      print(dataJsonArray);
+      print(dataJsonArray["data"]['id']);
+      lesson = Lesson.fromJson(dataJsonArray['data']);
+      return lesson;
+    }
+    return emptylesson as Lesson;
   }
 
   List<Lesson> getjsonDataLesson(String body) {

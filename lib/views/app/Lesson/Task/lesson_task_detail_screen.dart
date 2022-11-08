@@ -12,7 +12,7 @@ import 'package:subrate/controllers/storage/local/prefs/user_preference_controll
 import 'package:subrate/core/res/routes.dart';
 
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../controllers/getX/do_mission_getX_controller.dart';
 import '../../../../controllers/getX/mission_getX_controller.dart';
 import '../../../../core/res/assets.dart';
@@ -107,15 +107,12 @@ class _LessonTaskDetailState extends State<LessonTaskDetail> with Helpers {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
 
-    MissionGetXController.to.read();
-
-    print("image url: ${widget.mission.images[0].name}");
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
         title: Text(
-          "Task Detail",
+          AppLocalizations.of(context)!.task_detail,
           style: const TextStyle(
             fontSize: 20,
             color: Colors.black,
@@ -143,17 +140,17 @@ class _LessonTaskDetailState extends State<LessonTaskDetail> with Helpers {
               radius: 16,
               backgroundImage:
                   (UserPreferenceController().userInformation.avatar != ''
-                      ? !(_connectionStatus.name != 'none' || connection)
-                          ? AssetImage(Assets.profileImage)
-                          : NetworkImage(UserPreferenceController()
+                      ? (_connectionStatus.name != 'none' || connection)
+                          ? NetworkImage(UserPreferenceController()
                                   .userInformation
                                   .avatar ??
                               '')
+                          : AssetImage(Assets.profileImage)
                       : AssetImage(Assets.profileImage)) as ImageProvider,
             ),
             onPressed: () {
               AppGetXController.to
-                  .changeSelectedBottomBarScreen(selectedIndex: 2);
+                  .changeSelectedBottomBarScreen(selectedIndex: 4);
             },
           ),
           SizedBox(width: width / 70),
@@ -167,254 +164,258 @@ class _LessonTaskDetailState extends State<LessonTaskDetail> with Helpers {
           } else {
             buttonHeight = height / 8;
           }
-          return Container(
-            margin: EdgeInsets.symmetric(horizontal: width / 20),
-            alignment: AlignmentDirectional.center,
-            child: ListView(
-              children: [
-                Container(
-                  margin: EdgeInsetsDirectional.only(
-                    top: height / 70,
-                  ),
-                  height: height / 4.5,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: MissionDistributorColors.primaryColor,
-                  ),
-                  child: Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Container(
+          return Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: width / 19),
+              alignment: AlignmentDirectional.center,
+              child: ListView(
+                children: [
+                  Container(
+                    margin: EdgeInsetsDirectional.only(
+                      top: height / 70,
+                    ),
+                    height: height / 4.5,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: MissionDistributorColors.primaryColor,
+                    ),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                30,
+                              ),
+                            ),
+                            height: height / 4.5,
+                            width: double.infinity,
+                            child: widget.mission.images.isNotEmpty
+                                ? widget.mission.images[0].name.contains('http')
+                                    ? Image.asset(
+                                        Assets.missionImage,
+                                        fit: BoxFit.fill,
+                                      )
+                                    : Image.network(
+                                        // widget.Im,
+                                        NetworkLink(
+                                          link: widget.mission.images[0].name,
+                                        ).link,
+                                        fit: BoxFit.fill,
+                                      )
+                                : Image.asset(
+                                    Assets.missionImage,
+                                    fit: BoxFit.fill,
+                                  ),
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: double.infinity,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              30,
+                            gradient: LinearGradient(
+                              begin: AlignmentDirectional.topCenter,
+                              end: AlignmentDirectional.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.5),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        Container(
+                          alignment: AlignmentDirectional.bottomStart,
+                          padding: EdgeInsetsDirectional.only(
+                            start: width / 20,
+                            end: width / 20,
+                            top: height / 160,
+                            bottom: height / 80,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Text(
+                            widget.mission.title ??
+                                AppLocalizations.of(context)!.no_has_title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
                             ),
                           ),
-                          height: height / 4.5,
-                          width: double.infinity,
-                          child: widget.mission.images[0].name.isNotEmpty
-                              ? widget.mission.images[0].name.contains('http')
-                                  ? Image.asset(
-                                      Assets.missionImage,
-                                      fit: BoxFit.fill,
-                                    )
-                                  : Image.network(
-                                      // widget.Im,
-                                      NetworkLink(
-                                        link: widget.mission.images.first.name,
-                                      ).link,
-                                      fit: BoxFit.fill,
-                                    )
-                              : Image.asset(
-                                  Assets.missionImage,
-                                  fit: BoxFit.fill,
-                                ),
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: AlignmentDirectional.topCenter,
-                            end: AlignmentDirectional.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              Colors.black.withOpacity(0.5),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      Container(
-                        alignment: AlignmentDirectional.bottomStart,
-                        padding: EdgeInsetsDirectional.only(
-                          start: width / 20,
-                          end: width / 20,
-                          top: height / 160,
-                          bottom: height / 80,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Text(
-                          widget.mission.title ??
-                              AppLocalizations.of(context)!.no_has_title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: height / 100),
-                SingleChildScrollView(
-                  child: Text(
-                    widget.mission.description ?? 'No has description',
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
+                        )
+                      ],
                     ),
                   ),
-                ),
-                SizedBox(height: height / 20),
-                Container(
-                  margin: EdgeInsetsDirectional.only(start: width / 15),
-                  padding: EdgeInsetsDirectional.only(
-                      top: height / 50,
-                      start: width / 15,
-                      bottom: height / 50,
-                      end: width / 15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'How to get the job done',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: MissionDistributorColors.primaryColor,
-                        ),
+                  SizedBox(height: height / 90),
+                  SingleChildScrollView(
+                    child: Text(
+                      widget.mission.description ?? 'No has description',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
                       ),
-                      SizedBox(height: height / 100),
-                      Container(
-                        child: widget.mission.steps.isNotEmpty
-                            ? SizedBox(
-                                height: height / 5,
-                                child: ListView.builder(
-                                  itemCount: widget.mission.steps.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      margin: EdgeInsetsDirectional.only(
-                                        top: height / 100,
-                                      ),
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: width / 19.45,
-                                              height: height / 51,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: MissionDistributorColors
-                                                    .primaryColor,
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                (index + 1).toString(),
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: height / 25),
+                  Container(
+                    // margin: EdgeInsetsDirectional.only(start: width / 15),
+                    padding: EdgeInsetsDirectional.only(
+                        top: height / 50,
+                        start: width / 15,
+                        bottom: height / 50,
+                        end: width / 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'How to get the job done',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: MissionDistributorColors.primaryColor,
+                          ),
+                        ),
+                        SizedBox(height: height / 100),
+                        Container(
+                          child: widget.mission.steps.isNotEmpty
+                              ? SizedBox(
+                                  height: height / 5,
+                                  child: ListView.builder(
+                                    itemCount: widget.mission.steps.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        margin: EdgeInsetsDirectional.only(
+                                          top: height / 100,
+                                        ),
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                width: width / 19.45,
+                                                height: height / 51,
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:
+                                                      MissionDistributorColors
+                                                          .primaryColor,
+                                                ),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  (index + 1).toString(),
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(width: width / 100),
-                                            Text(
-                                              // index == 0 ?
-                                              widget.mission.steps[index],
-                                              // : index == 1
-                                              //     ? widget
-                                              //         .mission.steps[index]
-                                              //     : widget
-                                              //         .mission.steps[index],
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                                color: MissionDistributorColors
-                                                    .primaryColor,
+                                              SizedBox(width: width / 100),
+                                              Text(
+                                                // index == 0 ?
+                                                widget.mission.steps[index],
+                                                // : index == 1
+                                                //     ? widget
+                                                //         .mission.steps[index]
+                                                //     : widget
+                                                //         .mission.steps[index],
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color:
+                                                      MissionDistributorColors
+                                                          .primaryColor,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : SizedBox(
+                                  height: height / 7,
+                                  child: const Center(
+                                    child: Text(
+                                      'No steps available',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: MissionDistributorColors
+                                            .primaryColor,
                                       ),
-                                    );
-                                  },
-                                ),
-                              )
-                            : SizedBox(
-                                height: height / 7,
-                                child: const Center(
-                                  child: Text(
-                                    'No has steps',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color:
-                                          MissionDistributorColors.primaryColor,
                                     ),
                                   ),
                                 ),
+                        ),
+                        SizedBox(height: height / 50),
+                        Visibility(
+                          visible: isGoButtonVisible,
+                          child: MyElevatedButton(
+                            onPressed: () async {
+                              print(widget.mission.link);
+                              await _launchUrl(widget.mission.link
+                                          .contains('https://') ||
+                                      widget.mission.link.contains('http://')
+                                  ? widget.mission.link
+                                  : UrlLink(link: widget.mission.link).link);
+                              setState(() {
+                                isGoButtonVisible = false;
+                              });
+                              // Navigator.pushNamed(context, Routes.signUpScreen);
+                            },
+                            child: const Text(
+                              'GO',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
                               ),
-                      ),
-                      SizedBox(height: height / 50),
-                      Visibility(
-                        visible: isGoButtonVisible,
-                        child: MyElevatedButton(
-                          onPressed: () async {
-                            print(widget.mission.link);
-                            await _launchUrl(
-                                widget.mission.link.contains('https://') ||
-                                        widget.mission.link.contains('http://')
-                                    ? widget.mission.link
-                                    : UrlLink(link: widget.mission.link).link);
-                            setState(() {
-                              isGoButtonVisible = false;
-                            });
-                            // Navigator.pushNamed(context, Routes.signUpScreen);
-                          },
-                          child: const Text(
-                            'GO',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w300,
+                            ),
+                            height: buttonHeight,
+                            width: width / 1.27,
+                            borderRadiusGeometry: BorderRadius.circular(20),
+                            gradient: const LinearGradient(
+                              colors: [
+                                MissionDistributorColors.primaryColor,
+                                MissionDistributorColors.primaryColor,
+                              ],
                             ),
                           ),
-                          height: buttonHeight,
-                          width: width / 1.27,
-                          borderRadiusGeometry: BorderRadius.circular(20),
-                          gradient: const LinearGradient(
-                            colors: [
-                              MissionDistributorColors.primaryColor,
-                              MissionDistributorColors.primaryColor,
-                            ],
-                          ),
-                        ),
-                        replacement: MyElevatedButton(
-                          onPressed: () async {
-                            await selectPhotoFromGallery();
-                            if (_image != null) {}
-                          },
-                          child: const Text(
-                            'Submit screenshot',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w300,
+                          replacement: MyElevatedButton(
+                            onPressed: () async {
+                              await selectPhotoFromGallery();
+                              if (_image != null) {}
+                            },
+                            child: const Text(
+                              'Submit screenshot',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                            height: buttonHeight,
+                            width: width / 1.27,
+                            borderRadiusGeometry: BorderRadius.circular(20),
+                            gradient: const LinearGradient(
+                              colors: [
+                                MissionDistributorColors.primaryColor,
+                                MissionDistributorColors.primaryColor,
+                              ],
                             ),
                           ),
-                          height: buttonHeight,
-                          width: width / 1.27,
-                          borderRadiusGeometry: BorderRadius.circular(20),
-                          gradient: const LinearGradient(
-                            colors: [
-                              MissionDistributorColors.primaryColor,
-                              MissionDistributorColors.primaryColor,
-                            ],
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         },
@@ -478,9 +479,6 @@ class _LessonTaskDetailState extends State<LessonTaskDetail> with Helpers {
                 builder: (context) => LessonTaskCompletedScreen(
                   money: money.toString(),
                   mission: widget.mission,
-                  imageUrl: widget.mission.images.isNotEmpty
-                      ? widget.mission.images[0].name
-                      : Assets.missionImage,
                 ),
               ),
             );

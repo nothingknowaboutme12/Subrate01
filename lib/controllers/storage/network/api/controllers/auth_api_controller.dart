@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -33,7 +34,11 @@ class AuthApiController with Helpers {
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       BaseResponse baseResponse = BaseResponse.fromJson(jsonResponse);
-      UserPreferenceController().saveUserInformation(
+      if (kDebugMode) {
+        print("#NEETHAS");
+        print("Wait till token is stored");
+      }
+      await UserPreferenceController().saveUserInformation(
         user: baseResponse.data.user,
         email: email,
         password: password,

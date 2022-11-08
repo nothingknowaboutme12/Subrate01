@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../controllers/getX/mission_getX_controller.dart';
 import '../../../controllers/getX/payment_gateway_getX_controller.dart';
 import '../../../core/res/mission_distributor_colors.dart';
+import '../../../core/res/routes.dart';
 import '../../../core/widgets/MyElevatedButton.dart';
 
 import '../../../models/Task/transaction.dart';
@@ -97,7 +98,7 @@ class _StatementsScreenState extends State<StatementsScreen> {
                 children: [
                   MyElevatedButton(
                     onPressed: () async {
-                      // Navigator.pushNamed(context, Routes.rankScreen);
+                      Navigator.pushNamed(context, Routes.rankScreen);
                     },
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -107,15 +108,15 @@ class _StatementsScreenState extends State<StatementsScreen> {
                             '${AppLocalizations.of(context)!.wallet}: ',
                             style: TextStyle(
                               fontSize: 16,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.grey.shade300,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey.shade800,
                             ),
                           ),
                           Text(
                             '${MissionGetXController.to.money} \$',
                             style: const TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w300,
+                              fontWeight: FontWeight.w700,
                               color: MissionDistributorColors.primaryColor,
                             ),
                           ),
@@ -137,7 +138,7 @@ class _StatementsScreenState extends State<StatementsScreen> {
                   SizedBox(width: width / 90),
                   MyElevatedButton(
                     onPressed: () async {
-                      // Navigator.pushNamed(context, Routes.statementsScreen);
+                      Navigator.pushNamed(context, Routes.statementsScreen);
                     },
                     child: Row(
                       children: [
@@ -145,15 +146,15 @@ class _StatementsScreenState extends State<StatementsScreen> {
                           '${AppLocalizations.of(context)!.points}: ',
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.grey.shade300,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey.shade700,
                           ),
                         ),
                         Text(
                           MissionGetXController.to.points.toString(),
                           style: const TextStyle(
                             fontSize: 18,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: FontWeight.w700,
                             color: MissionDistributorColors.primaryColor,
                           ),
                         ),
@@ -210,8 +211,14 @@ class _StatementsScreenState extends State<StatementsScreen> {
   Widget walletTransactionItem(
       BuildContext context, int index, List<Payout> payouts) {
     return Container(
-      height: height / 10,
+      height: height / 8,
+      padding: EdgeInsets.all(7),
       margin: EdgeInsetsDirectional.only(bottom: height / 150),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [BoxShadow(color: Colors.grey.shade600, blurRadius: 1.2)],
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Column(
         children: [
           Stack(
@@ -254,7 +261,7 @@ class _StatementsScreenState extends State<StatementsScreen> {
                 alignment: AlignmentDirectional.topEnd,
                 child: Container(
                   width: width / 5,
-                  height: height / 25.5,
+                  height: height / 12.5,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: MissionDistributorColors.primaryColor,
@@ -278,10 +285,6 @@ class _StatementsScreenState extends State<StatementsScreen> {
                 ),
               ),
             ],
-          ),
-          const Divider(
-            color: MissionDistributorColors.primaryColor,
-            thickness: 0.8,
           ),
         ],
       ),

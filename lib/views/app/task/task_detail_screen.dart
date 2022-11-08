@@ -12,7 +12,7 @@ import 'package:subrate/controllers/storage/local/prefs/user_preference_controll
 import 'package:subrate/core/res/routes.dart';
 
 import 'package:url_launcher/url_launcher.dart';
-import '../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../controllers/getX/do_mission_getX_controller.dart';
 import '../../../controllers/getX/mission_getX_controller.dart';
 import '../../../core/res/assets.dart';
@@ -115,7 +115,7 @@ class _MissionDetailsScreenState extends State<MissionDetailsScreen>
         elevation: 0,
         backgroundColor: Colors.white,
         title: Text(
-          "Task Detail",
+          AppLocalizations.of(context)!.task_detail,
           style: const TextStyle(
             fontSize: 20,
             color: Colors.black,
@@ -153,7 +153,7 @@ class _MissionDetailsScreenState extends State<MissionDetailsScreen>
             ),
             onPressed: () {
               AppGetXController.to
-                  .changeSelectedBottomBarScreen(selectedIndex: 2);
+                  .changeSelectedBottomBarScreen(selectedIndex: 4);
             },
           ),
           SizedBox(width: width / 70),
@@ -195,13 +195,12 @@ class _MissionDetailsScreenState extends State<MissionDetailsScreen>
                           height: height / 4.5,
                           width: double.infinity,
                           child: widget.mission.images.isNotEmpty
-                              ? widget.mission.images.contains('http')
+                              ? widget.mission.images[0].name.contains('http')
                                   ? Image.asset(
                                       Assets.missionImage,
                                       fit: BoxFit.fill,
                                     )
                                   : Image.network(
-                                      // widget.mission.images[0].name,
                                       NetworkLink(
                                         link: widget.mission.images[0].name,
                                       ).link,
@@ -345,7 +344,7 @@ class _MissionDetailsScreenState extends State<MissionDetailsScreen>
                                 height: height / 7,
                                 child: const Center(
                                   child: Text(
-                                    'No has steps',
+                                    'No steps available',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color:

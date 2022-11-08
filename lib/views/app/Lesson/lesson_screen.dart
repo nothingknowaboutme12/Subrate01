@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:subrate/models/Lesson/lesson.dart';
 import 'package:subrate/views/app/task/main_screen.dart';
 
-import '../../../../app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../controllers/getX/app_getX_controller.dart';
 import '../../../../controllers/getX/mission_getX_controller.dart';
 import '../../../../controllers/storage/local/prefs/user_preference_controller.dart';
@@ -100,14 +100,14 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
-    AppLocalizations? localizations = AppLocalizations.of(context);
+    AppLocalizations localizations = AppLocalizations.of(context)!;
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
         if (mounted) {
-          // setState(() {
-          connection;
-          // });
+          setState(() {
+            connection;
+          });
         }
       },
     );
@@ -117,7 +117,8 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
         elevation: 0,
         backgroundColor: Colors.white,
         title: Text(
-          localizations!.lesson,
+          localizations.lesson,
+          // "Lesson",
           style: const TextStyle(
             fontSize: 20,
             color: Colors.black,
@@ -155,7 +156,7 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
             ),
             onPressed: () {
               AppGetXController.to
-                  .changeSelectedBottomBarScreen(selectedIndex: 2);
+                  .changeSelectedBottomBarScreen(selectedIndex: 3);
             },
           ),
           SizedBox(width: width / 70),
@@ -195,9 +196,10 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
                               Duration(seconds: 5),
                               () {
                                 isProgress = true;
-                                setState(() {
-                                  isProgress = true;
-                                });
+                                if (mounted)
+                                  setState(() {
+                                    isProgress = true;
+                                  });
                               },
                             );
                             List<Lesson> _controller = controller.lessons.value;
@@ -222,7 +224,7 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
                                       margin: EdgeInsetsDirectional.only(
                                         top: height / 70,
                                       ),
-                                      height: height / 4,
+                                      height: height / 5.5,
                                       width: double.infinity,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
@@ -306,6 +308,7 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
                                               child: Text(
                                                 _controller[index].title ??
                                                     localizations.no_has_title,
+                                                // "No title",
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 16,
@@ -321,24 +324,22 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
                                 },
                               );
                             } else if (_connectionStatus.name == 'none') {
-                              return Scaffold(
-                                body: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    Center(
-                                      child: Text(
-                                        'Not Have Connection, Please Check Your Internet Connection',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                              return Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      localizations.no_internet,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               );
                             } else if (_controller.isEmpty) {
                               return Center(
@@ -346,14 +347,14 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
                                   visible: isProgress,
                                   replacement:
                                       const CircularProgressIndicator(),
-                                  child: const Center(
-                                    child: Text('Not has Any Mission'),
+                                  child: Center(
+                                    child: Text(localizations.no_lesson),
                                   ),
                                 ),
                               );
                             } else {
-                              return const Center(
-                                child: Text('Not has Any Mission'),
+                              return Center(
+                                child: Text(localizations.no_lesson),
                               );
                             }
                           },
@@ -363,8 +364,9 @@ class _LessonScreenState extends State<LessonScreen> with Helpers {
                   ),
                 ),
               ],
-              // ),
-            );
+            )
+                // )
+                ;
           },
         ),
       ),
